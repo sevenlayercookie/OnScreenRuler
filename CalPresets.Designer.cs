@@ -50,7 +50,7 @@
             this.presetList.Location = new System.Drawing.Point(21, 22);
             this.presetList.Name = "presetList";
             this.presetList.Size = new System.Drawing.Size(202, 292);
-            this.presetList.TabIndex = 6;
+            this.presetList.TabIndex = 4;
             this.presetList.SelectedIndexChanged += new System.EventHandler(this.presetList_SelectedIndexChanged);
             // 
             // SaveButton
@@ -59,7 +59,7 @@
             this.SaveButton.Location = new System.Drawing.Point(368, 125);
             this.SaveButton.Name = "SaveButton";
             this.SaveButton.Size = new System.Drawing.Size(103, 26);
-            this.SaveButton.TabIndex = 4;
+            this.SaveButton.TabIndex = 3;
             this.SaveButton.Text = "Save Preset";
             this.SaveButton.UseVisualStyleBackColor = true;
             this.SaveButton.Click += new System.EventHandler(this.SaveButton_Click);
@@ -122,7 +122,7 @@
             this.LoadButton.Location = new System.Drawing.Point(21, 320);
             this.LoadButton.Name = "LoadButton";
             this.LoadButton.Size = new System.Drawing.Size(97, 26);
-            this.LoadButton.TabIndex = 3;
+            this.LoadButton.TabIndex = 5;
             this.LoadButton.Text = "Load Preset";
             this.LoadButton.UseVisualStyleBackColor = true;
             this.LoadButton.Click += new System.EventHandler(this.LoadButton_Click);
@@ -151,7 +151,7 @@
             this.DeletePresetBtn.Location = new System.Drawing.Point(124, 320);
             this.DeletePresetBtn.Name = "DeletePresetBtn";
             this.DeletePresetBtn.Size = new System.Drawing.Size(99, 26);
-            this.DeletePresetBtn.TabIndex = 13;
+            this.DeletePresetBtn.TabIndex = 6;
             this.DeletePresetBtn.Text = "Delete Preset";
             this.DeletePresetBtn.UseVisualStyleBackColor = true;
             this.DeletePresetBtn.Click += new System.EventHandler(this.DeletePresetBtn_Click);
@@ -162,7 +162,7 @@
             this.restoreDefaultsBtn.Location = new System.Drawing.Point(21, 349);
             this.restoreDefaultsBtn.Name = "restoreDefaultsBtn";
             this.restoreDefaultsBtn.Size = new System.Drawing.Size(122, 26);
-            this.restoreDefaultsBtn.TabIndex = 14;
+            this.restoreDefaultsBtn.TabIndex = 7;
             this.restoreDefaultsBtn.Text = "Restore Defaults";
             this.restoreDefaultsBtn.UseVisualStyleBackColor = true;
             this.restoreDefaultsBtn.Click += new System.EventHandler(this.restoreDefaultsBtn_Click);

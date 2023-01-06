@@ -227,7 +227,7 @@ namespace OnScreenCalipers
             }
             else
             {
-                this.Cursor = Cursors.Hand;
+                this.Cursor = Cursors.SizeWE;
                 if (Math.Abs(e.Location.X - ruler.Start.X) < clickTolerance)
                 {
                     // resize existing Start caliper
@@ -302,7 +302,14 @@ namespace OnScreenCalipers
             {
                 if ((Math.Abs(e.Location.Y - ruler.Start.Y) < clickTolerance && e.Location.X > ruler.Start.X && e.Location.X < ruler.End.X) || (Math.Abs(e.Location.X - ruler.Start.X) < clickTolerance) || Math.Abs(e.Location.X - ruler.End.X) < clickTolerance)
                 {
-                    this.Cursor = Cursors.Hand;
+                    if ((Math.Abs(e.Location.X - ruler.Start.X) < clickTolerance) || Math.Abs(e.Location.X - ruler.End.X) < clickTolerance)
+                            {
+                        this.Cursor = Cursors.SizeWE;
+                    }
+                    else {
+                        this.Cursor = Cursors.Hand; 
+                    }
+
                 }
                 else
                 {
@@ -750,6 +757,14 @@ namespace OnScreenCalipers
         {
             this.TopMost = checkBox1.Checked;
             CaliperAppearanceForm.DialogTopmost = checkBox1.Checked;
+        }
+
+        private void CalibrateTextBox_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            if (e.KeyChar == 13)
+            {
+                CalibrateBtn_Click(sender, e);
+            }
         }
     }
 

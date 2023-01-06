@@ -85,15 +85,17 @@
             this.CalibrateTextBox.TabIndex = 1;
             this.CalibrateTextBox.Text = "1000";
             this.CalibrateTextBox.TextChanged += new System.EventHandler(this.CalibrateTextBox_change);
+            this.CalibrateTextBox.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.CalibrateTextBox_KeyPress);
             // 
             // CalibrateBtn
             // 
             this.CalibrateBtn.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.CalibrateBtn.AutoSize = true;
             this.CalibrateBtn.BackColor = System.Drawing.Color.White;
             this.CalibrateBtn.Cursor = System.Windows.Forms.Cursors.Default;
             this.CalibrateBtn.Location = new System.Drawing.Point(120, 62);
             this.CalibrateBtn.Name = "CalibrateBtn";
-            this.CalibrateBtn.Size = new System.Drawing.Size(203, 38);
+            this.CalibrateBtn.Size = new System.Drawing.Size(203, 41);
             this.CalibrateBtn.TabIndex = 2;
             this.CalibrateBtn.Text = "Calibrate";
             this.CalibrateBtn.UseVisualStyleBackColor = false;
@@ -123,7 +125,7 @@
             this.helpToolStripMenuItem});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
-            this.menuStrip1.Size = new System.Drawing.Size(1201, 30);
+            this.menuStrip1.Size = new System.Drawing.Size(1201, 28);
             this.menuStrip1.TabIndex = 4;
             this.menuStrip1.Text = "menuStrip1";
             // 
@@ -135,7 +137,7 @@
             this.toolStripSeparator1,
             this.exitToolStripMenuItem});
             this.fileToolStripMenuItem.Name = "fileToolStripMenuItem";
-            this.fileToolStripMenuItem.Size = new System.Drawing.Size(46, 26);
+            this.fileToolStripMenuItem.Size = new System.Drawing.Size(46, 24);
             this.fileToolStripMenuItem.Text = "File";
             // 
             // openImageToolStripMenuItem
@@ -169,13 +171,13 @@
             this.editToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.screenshotToolStripMenuItem});
             this.editToolStripMenuItem.Name = "editToolStripMenuItem";
-            this.editToolStripMenuItem.Size = new System.Drawing.Size(49, 26);
+            this.editToolStripMenuItem.Size = new System.Drawing.Size(49, 24);
             this.editToolStripMenuItem.Text = "Edit";
             // 
             // screenshotToolStripMenuItem
             // 
             this.screenshotToolStripMenuItem.Name = "screenshotToolStripMenuItem";
-            this.screenshotToolStripMenuItem.Size = new System.Drawing.Size(224, 26);
+            this.screenshotToolStripMenuItem.Size = new System.Drawing.Size(144, 26);
             this.screenshotToolStripMenuItem.Text = "Capture";
             this.screenshotToolStripMenuItem.Click += new System.EventHandler(this.screenshotToolStripMenuItem_Click);
             // 
@@ -185,7 +187,7 @@
             this.transparentModeToolStripMenuItem,
             this.caliperAppearanceToolStripMenuItem});
             this.viewToolStripMenuItem.Name = "viewToolStripMenuItem";
-            this.viewToolStripMenuItem.Size = new System.Drawing.Size(55, 26);
+            this.viewToolStripMenuItem.Size = new System.Drawing.Size(55, 24);
             this.viewToolStripMenuItem.Text = "View";
             // 
             // transparentModeToolStripMenuItem
@@ -194,14 +196,14 @@
             this.transparentModeToolStripMenuItem.CheckOnClick = true;
             this.transparentModeToolStripMenuItem.CheckState = System.Windows.Forms.CheckState.Checked;
             this.transparentModeToolStripMenuItem.Name = "transparentModeToolStripMenuItem";
-            this.transparentModeToolStripMenuItem.Size = new System.Drawing.Size(224, 26);
+            this.transparentModeToolStripMenuItem.Size = new System.Drawing.Size(223, 26);
             this.transparentModeToolStripMenuItem.Text = "Transparent Mode";
             this.transparentModeToolStripMenuItem.Click += new System.EventHandler(this.transparentModeToolStripMenuItem_Click);
             // 
             // caliperAppearanceToolStripMenuItem
             // 
             this.caliperAppearanceToolStripMenuItem.Name = "caliperAppearanceToolStripMenuItem";
-            this.caliperAppearanceToolStripMenuItem.Size = new System.Drawing.Size(224, 26);
+            this.caliperAppearanceToolStripMenuItem.Size = new System.Drawing.Size(223, 26);
             this.caliperAppearanceToolStripMenuItem.Text = "Caliper Appearance";
             this.caliperAppearanceToolStripMenuItem.Click += new System.EventHandler(this.caliperAppearanceToolStripMenuItem_Click);
             // 
@@ -210,13 +212,13 @@
             this.calculateToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.qTcToolStripMenuItem});
             this.calculateToolStripMenuItem.Name = "calculateToolStripMenuItem";
-            this.calculateToolStripMenuItem.Size = new System.Drawing.Size(84, 26);
+            this.calculateToolStripMenuItem.Size = new System.Drawing.Size(84, 24);
             this.calculateToolStripMenuItem.Text = "Calculate";
             // 
             // qTcToolStripMenuItem
             // 
             this.qTcToolStripMenuItem.Name = "qTcToolStripMenuItem";
-            this.qTcToolStripMenuItem.Size = new System.Drawing.Size(224, 26);
+            this.qTcToolStripMenuItem.Size = new System.Drawing.Size(116, 26);
             this.qTcToolStripMenuItem.Text = "QTc";
             this.qTcToolStripMenuItem.Click += new System.EventHandler(this.qTcToolStripMenuItem_Click);
             // 
@@ -226,19 +228,19 @@
             this.calibrateToolStripMenuItem1,
             this.presetsToolStripMenuItem});
             this.calibrateToolStripMenuItem.Name = "calibrateToolStripMenuItem";
-            this.calibrateToolStripMenuItem.Size = new System.Drawing.Size(83, 26);
+            this.calibrateToolStripMenuItem.Size = new System.Drawing.Size(83, 24);
             this.calibrateToolStripMenuItem.Text = "Calibrate";
             // 
             // calibrateToolStripMenuItem1
             // 
             this.calibrateToolStripMenuItem1.Name = "calibrateToolStripMenuItem1";
-            this.calibrateToolStripMenuItem1.Size = new System.Drawing.Size(224, 26);
+            this.calibrateToolStripMenuItem1.Size = new System.Drawing.Size(152, 26);
             this.calibrateToolStripMenuItem1.Text = "Calibrate";
             // 
             // presetsToolStripMenuItem
             // 
             this.presetsToolStripMenuItem.Name = "presetsToolStripMenuItem";
-            this.presetsToolStripMenuItem.Size = new System.Drawing.Size(224, 26);
+            this.presetsToolStripMenuItem.Size = new System.Drawing.Size(152, 26);
             this.presetsToolStripMenuItem.Text = "Presets...";
             this.presetsToolStripMenuItem.Click += new System.EventHandler(this.presetsToolStripMenuItem_Click);
             // 
@@ -248,7 +250,7 @@
             this.aboutToolStripMenuItem,
             this.helpToolStripMenuItem1});
             this.helpToolStripMenuItem.Name = "helpToolStripMenuItem";
-            this.helpToolStripMenuItem.Size = new System.Drawing.Size(55, 26);
+            this.helpToolStripMenuItem.Size = new System.Drawing.Size(55, 24);
             this.helpToolStripMenuItem.Text = "Help";
             // 
             // aboutToolStripMenuItem
