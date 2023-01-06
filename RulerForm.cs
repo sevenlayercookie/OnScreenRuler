@@ -1,4 +1,6 @@
-﻿using System;
+﻿using On_Screen_Calipers;
+using On_Screen_Calipers.Properties;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -10,33 +12,33 @@ using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-
+using System.Windows.Forms.PropertyGridInternal;
 
 namespace OnScreenRuler
 {
     public partial class RulerForm : Form
     {
-        private Ruler ruler;
+        public Ruler ruler;
         private Crosshair crosshair;
         private bool isDragging;
         private Point mouseLocation = new Point(0, 0);
         private Button leftButton;
         private Button rightButton;
-
         public RulerForm()
         {
             InitializeComponent();
             //this.ControlBox = true;
-
+            ruler = new Ruler();
             // Set the window to be transparent
             // so that it doesn't obscure the content underneath it
-            this.TransparencyKey = Color.Red;
-            this.BackColor = Color.Red;
+            this.TransparencyKey = Color.AliceBlue;
+            this.BackColor = Color.AliceBlue;
+
             // Set the window to be topmost
             // so that it stays above other windows
             //this.TopMost = true;
 
-            ruler = new Ruler();
+
             crosshair = new Crosshair();
 
             // button intitialisation
@@ -83,6 +85,16 @@ namespace OnScreenRuler
         protected override void OnPaint(PaintEventArgs e)
         {
             base.OnPaint(e);
+
+            // load values from settings
+            // ruler.EnableTicks = CaliperAppearanceForm.DialogTickMarksEnabled;
+            // draw image if it is present
+            if (openedImage != null)
+            {
+                e.Graphics.DrawImage(openedImage, 0, 0);
+            }
+
+            //DrawBorder(); // draw border around window
             // Calculate the length and angle of the ruler
             int dx = ruler.End.X - ruler.Start.X;
             //int dy = ruler.End.Y - ruler.Start.Y;
@@ -102,49 +114,85 @@ namespace OnScreenRuler
             // Translate the origin of the coordinate system to the start point of the ruler
             e.Graphics.TranslateTransform(ruler.Start.X, ruler.Start.Y);
             // Draw the ruler
-            e.Graphics.DrawLine(Pens.Orange, 0, 0, (float)length, 0);
+            //Pen RulerPen = new Pen(Pens.Lime.Brush,ruler.lineWidth);
+            e.Graphics.DrawLine(ruler.Pen, 0, 0, (float)length, 0);
 
             // Draw Start and End Tick
-            e.Graphics.DrawLine(Pens.Orange, 0, -capHeight, 0, capHeight);
-            e.Graphics.DrawLine(Pens.Orange, (float)length, -capHeight, (float)length, capHeight);
+            e.Graphics.DrawLine(ruler.Pen, 0, -capHeight, 0, capHeight);
+            e.Graphics.DrawLine(ruler.Pen, (float)length, -capHeight, (float)length, capHeight);
             //e.Graphics.DrawLine(Pens.Orange, 0, -capHeight, 0, capHeight);
             //e.Graphics.DrawLine(Pens.Orange, (float)length, -capHeight, (float)length, capHeight);
 
             // Draw the tick marks and distance measurement
             // using the rotated coordinate system
-            int tickInterval = ruler.CurrentTickWidth; // in pixels (should scale with PPMS)
 
-
-
-
-            for (int i = tickInterval; i < Math.Abs(length); i += tickInterval)
+            if (ruler.EnableTicks)
             {
-                if (length > 0)
+                int tickInterval = ruler.CurrentTickInterval; // in pixels (should scale with PPMS)
+
+                //Pen TickPen = new Pen(Pens.Lime.Brush, 1);
+
+                for (int i = tickInterval; i < Math.Abs(length); i += tickInterval)
                 {
-                    e.Graphics.DrawLine(Pens.Orange, i, 0, i, -5);
+                    if (length > 0)
+                    {
+                        e.Graphics.DrawLine(ruler.TickPen, i, 0, i, -5);
+                    }
+                    else
+                    {
+                        e.Graphics.DrawLine(ruler.TickPen, -i, 0, -i, -5);
+                    }
+                }
+
+            }
+
+
+            string label = ruler.getCurrentLabel();
+
+            SizeF labelSize = e.Graphics.MeasureString(label, ruler.Font);
+
+            // Calculate the x-coordinate of the text's position
+            int x = (int)((length - labelSize.Width) / 2) + ruler.Start.X;
+            int y = (int)(ruler.Start.Y - labelSize.Height - 10);
+
+            // Ensure that the text is not drawn off the left side of the screen
+            if (x < 0)
+            {
+                x = 0;
+            }
+
+            // Create a solid brush
+            using (SolidBrush brush = new SolidBrush(ruler.FontColor))
+            {
+                if (!ruler.LabelBackTransparent)
+                {
+                    // Draw the text with a black outline using the TextRenderer.DrawText method
+                    TextRenderer.DrawText(e.Graphics, label, ruler.Font, new Point(x, y), ruler.FontColor, ruler.LabelBackColor);
                 }
                 else
                 {
-                    e.Graphics.DrawLine(Pens.Orange, -i, 0, -i, -5);
+                    TextRenderer.DrawText(e.Graphics, label, ruler.Font, new Point(x, y), ruler.FontColor);
                 }
             }
 
 
 
 
-            //string label = ruler.DistancePixels.ToString() + " " + ruler.CurrentUnit;
-            string label = ruler.getCurrentLabel();
-
-            SizeF labelSize = e.Graphics.MeasureString(label, this.Font);
-            using (SolidBrush brush = new SolidBrush(Color.Orange))
-            {
-                e.Graphics.DrawString(label, this.Font, brush, (int)((length - labelSize.Width) / 2), -30);
-            }
 
 
+        }
 
+        private int DrawBorder ()
+        {
 
+            Rectangle windowRect = new Rectangle(this.Location.X, this.Location.Y, this.Size.Width, this.Size.Height);
+            Rectangle borderRect = new Rectangle(windowRect.X + 2, windowRect.Y + 2, windowRect.Width - 4, windowRect.Height - 4);
 
+            Graphics e = this.CreateGraphics();
+            Pen BorderPen = new Pen(Color.Blue, 4);
+            e.DrawRectangle(BorderPen, borderRect);
+            this.Invalidate();
+            return 0;
         }
 
 
@@ -163,6 +211,7 @@ namespace OnScreenRuler
                 if (Math.Abs(e.Location.Y - ruler.Start.Y) < clickTolerance && e.Location.X > ruler.Start.X && e.Location.X < ruler.End.X)
                 {
                     // move entire caliper
+                    this.Cursor = Cursors.Hand;
                     moveEntireCaliper = true;
                     moveOffsetX = e.Location.X - ruler.Start.X;
 
@@ -171,13 +220,16 @@ namespace OnScreenRuler
                 {
                     // make new caliper
                     newRuler = true;
+                    this.Cursor = Cursors.Hand;
                 }
             }
             else
             {
+                this.Cursor = Cursors.Hand;
                 if (Math.Abs(e.Location.X - ruler.Start.X) < clickTolerance)
                 {
                     // resize existing Start caliper
+
                     resizeStart = true;
                     resizeEnd = false;
                     newRuler = false;
@@ -240,12 +292,22 @@ namespace OnScreenRuler
         bool resizeEnd = false;
         bool moveEntireCaliper = false;
         int moveOffsetX = 0;
-        int moveOffsetY = 0;
 
         protected override void OnMouseMove(MouseEventArgs e)
         {
             base.OnMouseMove(e);
+            if (!isDragging)
+            {
+                if ((Math.Abs(e.Location.Y - ruler.Start.Y) < clickTolerance && e.Location.X > ruler.Start.X && e.Location.X < ruler.End.X) || (Math.Abs(e.Location.X - ruler.Start.X) < clickTolerance) || Math.Abs(e.Location.X - ruler.End.X) < clickTolerance)
+                {
+                    this.Cursor = Cursors.Hand;
+                }
+                else
+                {
+                    this.Cursor = Cursors.Cross;
+                }
 
+            }
             if (isDragging)
             {
 
@@ -278,6 +340,9 @@ namespace OnScreenRuler
                 int dx = ruler.End.X - ruler.Start.X;
                 ruler.DistancePixels = dx;
                 mouseLocation = e.Location;
+                // update QT calc dialog box
+                QTcForm.DialogQT = ruler.Milliseconds;
+                
                 // Redraw the ruler
                 this.Invalidate();
             }
@@ -291,9 +356,9 @@ namespace OnScreenRuler
             value = Math.Abs(value);
             if (unit == "seconds")
             {
-                endValue = Math.Round(value,2);
+                endValue = Math.Round(value, 2);
             }
-           else
+            else
             {
                 endValue = Math.Round(value);
             }
@@ -318,10 +383,11 @@ namespace OnScreenRuler
                 ruler.Start = newStart;
                 ruler.DistancePixels = ruler.End.X - ruler.Start.X;
                 swappedEnds = true;
-            }    
+            }
 
             // Stop dragging the ruler
             isDragging = false;
+            this.Cursor = Cursors.Cross;
 
             // draw buttons
             DrawButtons();
@@ -337,7 +403,10 @@ namespace OnScreenRuler
         }
         private void RulerForm_Load(object sender, EventArgs e)
         {
+            LoadSettings();
+            
             SetSelectedOption(UnitsBox, ruler);
+            DoubleBuffered = true;
         }
 
         private void listBox1_SelectedIndexChanged(object sender, EventArgs e)
@@ -383,31 +452,226 @@ namespace OnScreenRuler
 
         private void CalibrateBtn_Click(object sender, EventArgs e)
         {
-            
+
             double calibrateValue = double.Parse(CalibrateTextBox.Text);
             if (ruler.CurrentUnit == "pixels")
             {
-                ruler.PPMS = ruler.DistancePixels / calibrateValue;
+                // can't calibrate pixels.... they're literally just there
+
             }
             if (ruler.CurrentUnit == "milliseconds")
             {
-                ruler.PPMS = ruler.DistancePixels / ruler.convertUnits(calibrateValue, "ms", "px");
+                ruler.PPMS = ruler.DistancePixels / calibrateValue;
             }
             if (ruler.CurrentUnit == "seconds")
             {
-                ruler.PPMS = ruler.DistancePixels / ruler.convertUnits(calibrateValue, "sec", "px");
+                ruler.PPMS = ruler.DistancePixels / ruler.convertUnits(calibrateValue, "sec", "ms");
             }
             if (ruler.CurrentUnit == "bpm")
             {
-                ruler.PPMS = ruler.DistancePixels / ruler.convertUnits(calibrateValue, "bpm", "px");
+                ruler.PPMS = ruler.DistancePixels / ruler.convertUnits(calibrateValue, "bpm", "ms");
             }
+            Settings.Default["LastPPMS"] = ruler.PPMS;
+            ruler.UpdateRuler();
+            Settings.Default.Save();
             this.Invalidate();
+
+        }
+
+        CaliperAppearance CaliperAppearanceForm = new CaliperAppearance();
+
+        private void caliperAppearanceToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            // load current values into Dialog Form
+            CaliperAppearanceForm.DialogCaliperLineWidthNewValue = ruler.lineWidth;
+            CaliperAppearanceForm.DialogTickMarksEnabled = ruler.EnableTicks;
+            CaliperAppearanceForm.DialogSelectedLineColor = ruler.Color;
+            CaliperAppearanceForm.DialogSelectedFont = ruler.Font;
+            CaliperAppearanceForm.DialogSelectedFontColor = ruler.FontColor;
+            CaliperAppearanceForm.DialogSelectedLabelBackColor = ruler.LabelBackColor;
+            CaliperAppearanceForm.LabelBackTransparent = ruler.LabelBackTransparent;
+            CaliperAppearanceForm.DialogTopmost = this.TopMost;
+            //CaliperAppearanceForm.linecol
+
+            if (CaliperAppearanceForm.ShowDialog() == DialogResult.OK)
+            {
+                // save appearance settings
+                ruler.lineWidth = CaliperAppearanceForm.DialogCaliperLineWidthNewValue;
+                ruler.EnableTicks = CaliperAppearanceForm.DialogTickMarksEnabled;
+                ruler.SetColor(CaliperAppearanceForm.DialogSelectedLineColor);
+                ruler.Font = CaliperAppearanceForm.DialogSelectedFont;
+                ruler.FontColor = CaliperAppearanceForm.DialogSelectedFontColor;
+                ruler.LabelBackColor = CaliperAppearanceForm.DialogSelectedLabelBackColor;
+                ruler.LabelBackTransparent = CaliperAppearanceForm.LabelBackTransparent;
+                this.TopMost = CaliperAppearanceForm.DialogTopmost;
+
+                // save to persistent settings
+                SaveSettings();
+
+            }
+        }
+
+        private int SaveSettings()
+        {
+            Settings.Default["LastPPMS"] = ruler.PPMS;
+            Settings.Default["LabelFont"] = ruler.Font;
+            Settings.Default.LabelFontColor = ruler.FontColor;
+            Settings.Default["LabelBackColor"] = ruler.LabelBackColor;
+            Settings.Default["LineColor"] = ruler.Color;
+            Settings.Default["LineWidth"] = ruler.lineWidth;
+            Settings.Default["TicksEnabled"] = ruler.EnableTicks;
+            //ruler.UpdateRuler();
+            //Settings.Default["Ruler"] = ruler;
+            Settings.Default.Save(); // Saves settings in application configuration file
+            return 0;
+        }
+        private int LoadSettings()
+        {
+            Settings.Default.Reload(); // Load settings from application configuration file
+            if (Settings.Default.LabelFont == null)
+            {
+                SaveSettings(); // initialize first run settings
+                return 1;
+            }
+            else
+            {
+                ruler.PPMS = Settings.Default.LastPPMS;
+                ruler.Font = Settings.Default.LabelFont;
+                ruler.FontColor = Settings.Default.LabelFontColor;
+                ruler.LabelBackColor = Settings.Default.LabelBackColor;
+                ruler.Color = Settings.Default.LineColor;
+                ruler.lineWidth = Settings.Default.LineWidth;
+                ruler.EnableTicks = Settings.Default.TicksEnabled;
+                //ruler = Settings.Default.Ruler;
+                ruler.UpdateRuler();               
+                return 0;
+
+            }
             
+        }
+
+
+
+        public Image openedImage;
+        private void openImageToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (openFileDialog1.ShowDialog() == DialogResult.OK)
+            {
+
+                openedImage = new Bitmap(openFileDialog1.OpenFile());
+                //this.BackgroundImage = openedImage;
+                transparentModeToolStripMenuItem.Checked = false;
+                TransparencyCheckBox2.Checked = false;
+                this.BackColor = Color.LightGray;
+
+            }
+
+        }
+
+        private void exitToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            this.Close();
+        }
+
+        private void screenshotToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void transparentModeToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+
+            if (transparentModeToolStripMenuItem.Checked == true)
+            {
+                // Set the window to be transparent
+                // so that it doesn't obscure the content underneath it
+                this.BackColor = Color.AliceBlue;
+                this.BackgroundImage = null;
+                openedImage = null;
+                TransparencyCheckBox2.Checked = true;
+            }
+            else
+            {
+                // Set the window to be transparent
+                // so that it doesn't obscure the content underneath it
+                this.BackColor = Color.LightGray;
+                TransparencyCheckBox2.Checked = false;
+            }
+        }
+
+        private void closeImageToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            this.BackgroundImage = null;
+            openedImage = null;
+        }
+
+
+        private void aboutToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            AboutDialog AboutDialog = new AboutDialog();
+            AboutDialog.Show();
+        }
+
+        private void TransparencyCheckBox2_CheckedChanged(object sender, EventArgs e)
+        {
+            if (TransparencyCheckBox2.Checked == true)
+            {
+                // Set the window to be transparent
+                // so that it doesn't obscure the content underneath it
+                this.BackColor = Color.AliceBlue;
+                this.BackgroundImage = null;
+                openedImage = null;
+                transparentModeToolStripMenuItem.Checked = true;
+            }
+            else
+            {
+                // Set the window to be transparent
+                // so that it doesn't obscure the content underneath it
+                this.BackColor = Color.LightGray;
+                transparentModeToolStripMenuItem.Checked = false;
+            }
+
+        }
+        QTc QTcForm = new QTc();
+        private void qTcToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            ruler.CurrentUnit = "milliseconds";
+            ruler.UpdateRuler();
+            QTcForm.DialogQT = ruler.Milliseconds;
+            QTcForm.TopMost = this.TopMost;
+            QTcForm.Show();
+        }
+
+        private void presetsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            CalPresets CalPresetsForm = new CalPresets();
+            if (CalPresetsForm.ShowDialog() == DialogResult.OK)
+            {
+                ruler.PPMS = CalPresetsForm.PresetPPMS;
+                //ruler.PPMV = CalPresetsForm.PresetPPMV;
+            }
+        }
+
+        private void RulerForm_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            Settings.Default.Save();
+        }
+
+        private void RulerForm_Resize(object sender, EventArgs e)
+        {
+            DrawBorder();
+        }
+
+        private void checkBox1_CheckedChanged(object sender, EventArgs e)
+        {
+            this.TopMost = checkBox1.Checked;
+            CaliperAppearanceForm.DialogTopmost = checkBox1.Checked;
         }
     }
 
     // A class to represent the on-screen ruler
-    class Ruler
+    [Serializable]
+    public class Ruler
     {
         public Point Start { get; set; }
         public Point End { get; set; }
@@ -420,8 +684,19 @@ namespace OnScreenRuler
         public double PPMS { get; set; }        // pixels per millisecond
 
         public string CurrentLabel { get; set; }
-        public int CurrentTickWidth { get; set; }
+        public int CurrentTickInterval { get; set; }
 
+        // appearance
+        public Color Color { get; set; }
+        public int lineWidth { get; set; }
+        public bool EnableTicks { get; set; }
+        public Pen Pen { get; set; }
+        public Pen TickPen { get; set; }
+        public int TickLineWidth { get; set; }
+        public Font Font { get; set; }
+        public Color FontColor { get; set; }
+        public Color LabelBackColor { get; set; }
+        public bool LabelBackTransparent { get; set; }
         public Ruler()
         {
             Start = new Point(0, 0);
@@ -429,13 +704,25 @@ namespace OnScreenRuler
             DistancePixels = 0;
             CurrentUnit = "milliseconds";
             CurrentUnitAbbrev = "ms";
-            PPMS = 306.0/789.0;   // 306 pixels per 789 ms (Mayo 12-Lead)
+            PPMS = 306.0 / 789.0;   // 306 pixels per 789 ms (Mayo 12-Lead)
             Milliseconds = DistancePixels / PPMS;
             Seconds = Milliseconds / 1000.0;
             BPM = 1.0 / (Seconds / 36000.0);
-            CurrentTickWidth = (int)(40.0 * PPMS);
-            //CurrentLabel = "pixels";
-            
+            EnableTicks = true;
+            CurrentTickInterval = (int)(40.0 * PPMS);
+            TickLineWidth = 1;
+
+            // appearance
+            lineWidth = 2;
+            Color = Color.Lime;
+            Pen = new Pen(Color, lineWidth);
+            TickPen = new Pen(Color, TickLineWidth);
+            Font = new Font("Arial", 16);
+            FontColor = Color.Orange;
+            LabelBackColor = Color.Black;
+            LabelBackTransparent = false;
+
+
 
         }
 
@@ -470,7 +757,7 @@ namespace OnScreenRuler
             if (CurrentUnit == "pixels")
             {
                 CurrentLabel = Math.Abs(DistancePixels).ToString("N0") + " " + "px";
-                
+
             }
             if (CurrentUnit == "milliseconds")
             {
@@ -519,7 +806,7 @@ namespace OnScreenRuler
             // convert input value to milliseconds (the "standard")
             if (inputUnit == "pixels" || inputUnit == "px")
             {
-                ms = inputValue/PPMS;
+                ms = inputValue / PPMS;
             }
             if (inputUnit == "milliseconds" || inputUnit == "ms")
             {
@@ -527,17 +814,17 @@ namespace OnScreenRuler
             }
             if (inputUnit == "seconds" || inputUnit == "sec")
             {
-                ms = inputValue / 1000;
+                ms = inputValue * 1000;
             }
-            if (CurrentUnit == "bpm")
+            if (inputUnit == "bpm")
             {
-                ms = 1/((inputValue / 1000)/60);
+                ms = 1 / ((inputValue / 1000) / 60);
             }
 
             // convert ms to output
             if (outputUnit == "pixels" || outputUnit == "px")
             {
-                return Math.Round(ms*PPMS);
+                return Math.Round(ms * PPMS);
             }
             if (outputUnit == "milliseconds" || outputUnit == "ms")
             {
@@ -549,13 +836,31 @@ namespace OnScreenRuler
             }
             if (outputUnit == "bpm")
             {
-                return Math.Round(1/((ms / 1000)/60));
+                return Math.Round(1 / ((ms / 1000) / 60));
             }
 
             return 0;
         }
 
+        public Color SetColor(Color NewColor)
+        {
+            Color = NewColor;
+            Pen = new Pen(Color, lineWidth);
+            TickPen = new Pen(Color, TickLineWidth);
+            return Color;
+        }
 
+        public int UpdateRuler() // updates ruler vars based on the other calcs
+        {
+            // update Pen based on PenColor and LineWidth
+            Pen = new Pen(Color, lineWidth);
+            TickPen = new Pen(Color, TickLineWidth);
+            // update calcs
+            getCurrentValue();
+            getCurrentLabel();
+            CurrentTickInterval = (int)(40.0 * PPMS);
+            return 0;
+        }
     }
 
     class Crosshair

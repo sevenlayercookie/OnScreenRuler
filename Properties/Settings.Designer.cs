@@ -8,22 +8,98 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace On_Screen_Calipers.Properties
-{
-
-
+namespace On_Screen_Calipers.Properties {
+    
+    
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.Editors.SettingsDesigner.SettingsSingleFileGenerator", "11.0.0.0")]
-    internal sealed partial class Settings : global::System.Configuration.ApplicationSettingsBase
-    {
-
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.Editors.SettingsDesigner.SettingsSingleFileGenerator", "17.4.0.0")]
+    internal sealed partial class Settings : global::System.Configuration.ApplicationSettingsBase {
+        
         private static Settings defaultInstance = ((Settings)(global::System.Configuration.ApplicationSettingsBase.Synchronized(new Settings())));
-
-        public static Settings Default
-        {
-            get
-            {
+        
+        public static Settings Default {
+            get {
                 return defaultInstance;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("0.3878326996197719")]
+        public double LastPPMS {
+            get {
+                return ((double)(this["LastPPMS"]));
+            }
+            set {
+                this["LastPPMS"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        public global::System.Drawing.Font LabelFont {
+            get {
+                return ((global::System.Drawing.Font)(this["LabelFont"]));
+            }
+            set {
+                this["LabelFont"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        public global::System.Drawing.Color LabelBackColor {
+            get {
+                return ((global::System.Drawing.Color)(this["LabelBackColor"]));
+            }
+            set {
+                this["LabelBackColor"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        public global::System.Drawing.Color LineColor {
+            get {
+                return ((global::System.Drawing.Color)(this["LineColor"]));
+            }
+            set {
+                this["LineColor"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("0")]
+        public int LineWidth {
+            get {
+                return ((int)(this["LineWidth"]));
+            }
+            set {
+                this["LineWidth"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool TicksEnabled {
+            get {
+                return ((bool)(this["TicksEnabled"]));
+            }
+            set {
+                this["TicksEnabled"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        public global::System.Drawing.Color LabelFontColor {
+            get {
+                return ((global::System.Drawing.Color)(this["LabelFontColor"]));
+            }
+            set {
+                this["LabelFontColor"] = value;
             }
         }
     }
