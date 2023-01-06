@@ -401,6 +401,33 @@ namespace OnScreenRuler
             this.Controls.Add(leftButton);
             this.Controls.Add(rightButton);
         }
+
+        private void Screenshot()
+        {
+            try
+            {
+                // set the screenshot resolution based on your monitor's resolution
+                Bitmap captureBitmap = new Bitmap(1024, 768, PixelFormat.Format32bppArgb);
+                Rectangle captureRectangle = Screen.AllScreens[0].Bounds;
+                Graphics captureGraphics = Graphics.FromImage(captureBitmap);
+                captureGraphics.CopyFromScreen(captureRectangle.Left, captureRectangle.Top, 0, 0, captureRectangle.Size);
+
+                // select the save location of the captured screenshot
+                //captureBitmap.Save(@"E:\Capture.jpg", ImageFormat.Jpeg);
+                
+
+                // show a message to let the user know that a screenshot has been captured
+                MessageBox.Show("Screenshot taken! Press `OK` to continue...");
+            }
+
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error! " + ex.Message);
+            }
+        }
+
+
+
         private void RulerForm_Load(object sender, EventArgs e)
         {
             LoadSettings();
