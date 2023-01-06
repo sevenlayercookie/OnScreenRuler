@@ -1,4 +1,4 @@
-﻿namespace On_Screen_Calipers
+﻿namespace OnScreenCalipers
 {
     partial class CaliperAppearance
     {

@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace On_Screen_Calipers.Properties {
+namespace OnScreenCalipers.Properties {
     
     
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
@@ -100,6 +100,87 @@ namespace On_Screen_Calipers.Properties {
             }
             set {
                 this["LabelFontColor"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        public global::System.IO.MemoryStream Presets {
+            get {
+                return ((global::System.IO.MemoryStream)(this["Presets"]));
+            }
+            set {
+                this["Presets"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("test1")]
+        public string Setting {
+            get {
+                return ((string)(this["Setting"]));
+            }
+            set {
+                this["Setting"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string Setting1 {
+            get {
+                return ((string)(this["Setting1"]));
+            }
+            set {
+                this["Setting1"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        public global::OnScreenCalipers.CalPresets Setting2 {
+            get {
+                return ((global::OnScreenCalipers.CalPresets)(this["Setting2"]));
+            }
+            set {
+                this["Setting2"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        public OnScreenCalipers.Preset[] PresetsArray {
+            get {
+                return ((OnScreenCalipers.Preset[])(this["PresetsArray"]));
+            }
+            set {
+                this["PresetsArray"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string Setting4 {
+            get {
+                return ((string)(this["Setting4"]));
+            }
+            set {
+                this["Setting4"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string Setting5 {
+            get {
+                return ((string)(this["Setting5"]));
+            }
+            set {
+                this["Setting5"] = value;
             }
         }
     }

@@ -1,20 +1,22 @@
-﻿using On_Screen_Calipers;
-using On_Screen_Calipers.Properties;
+﻿using OnScreenCalipers;
+using OnScreenCalipers.Properties;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
 using System.Drawing.Drawing2D;
+using System.Drawing.Imaging;
 using System.Drawing.Text;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Windows.Forms.PropertyGridInternal;
 
-namespace OnScreenRuler
+namespace OnScreenCalipers
 {
     public partial class RulerForm : Form
     {
@@ -58,7 +60,7 @@ namespace OnScreenRuler
             isDragging = false;
 
         }
-
+        
         private void SetSelectedOption(ComboBox unitsBox, Ruler ruler)
         {
             // Set the selected option of the unitsBox combo box
@@ -401,37 +403,88 @@ namespace OnScreenRuler
             this.Controls.Add(leftButton);
             this.Controls.Add(rightButton);
         }
+        [DllImport("gdi32.dll", CharSet = CharSet.Auto, SetLastError = true, ExactSpelling = true)]
+        public static extern int GetDeviceCaps(IntPtr hDC, int nIndex);
+
+        public enum DeviceCap
+        {
+            VERTRES = 10,
+            DESKTOPVERTRES = 117
+        }
+
+        [System.Runtime.InteropServices.DllImport("user32.dll")]
+        public static extern bool SetProcessDPIAware();
 
         private void Screenshot()
         {
             try
             {
                 // set the screenshot resolution based on your monitor's resolution
-                Bitmap captureBitmap = new Bitmap(1024, 768, PixelFormat.Format32bppArgb);
+                //Bitmap captureBitmap = new Bitmap(1024, 768, PixelFormat.Format32bppArgb);
+                
+                Rectangle wholeScreen = GetDisplayResolution();          // gets whole screen
+
+                
+
+                Rectangle windowRect = new Rectangle(this.Location.X, this.Location.Y, this.Size.Width, this.Size.Height);
+                Rectangle resolution = windowRect;
+                openedImage = new Bitmap(resolution.Width, resolution.Height, PixelFormat.Format32bppArgb);
                 Rectangle captureRectangle = Screen.AllScreens[0].Bounds;
-                Graphics captureGraphics = Graphics.FromImage(captureBitmap);
-                captureGraphics.CopyFromScreen(captureRectangle.Left, captureRectangle.Top, 0, 0, captureRectangle.Size);
+                Graphics captureGraphics = Graphics.FromImage(openedImage);
+                captureGraphics.CopyFromScreen(resolution.Left, resolution.Top, 0, 0, resolution.Size);
 
                 // select the save location of the captured screenshot
-                //captureBitmap.Save(@"E:\Capture.jpg", ImageFormat.Jpeg);
+                openedImage.Save(@"C:\Users\seven\Desktop\test\screenshot.jpeg", ImageFormat.Jpeg);
                 
 
                 // show a message to let the user know that a screenshot has been captured
-                MessageBox.Show("Screenshot taken! Press `OK` to continue...");
+                //MessageBox.Show("Screenshot taken! Press `OK` to continue...");
             }
 
             catch (Exception ex)
             {
                 MessageBox.Show("Error! " + ex.Message);
             }
+
+
+            double GetWindowsScreenScalingFactor(bool percentage = true)
+            {
+                //Create Graphics object from the current windows handle
+                Graphics GraphicsObject = Graphics.FromHwnd(IntPtr.Zero);
+                //Get Handle to the device context associated with this Graphics object
+                IntPtr DeviceContextHandle = GraphicsObject.GetHdc();
+                //Call GetDeviceCaps with the Handle to retrieve the Screen Height
+                int LogicalScreenHeight = GetDeviceCaps(DeviceContextHandle, (int)DeviceCap.VERTRES);
+                int PhysicalScreenHeight = GetDeviceCaps(DeviceContextHandle, (int)DeviceCap.DESKTOPVERTRES);
+                //Divide the Screen Heights to get the scaling factor and round it to two decimals
+                double ScreenScalingFactor = Math.Round(PhysicalScreenHeight / (double)LogicalScreenHeight, 2);
+                //If requested as percentage - convert it
+                if (percentage)
+                {
+                    ScreenScalingFactor *= 100.0;
+                }
+                //Release the Handle and Dispose of the GraphicsObject object
+                GraphicsObject.ReleaseHdc(DeviceContextHandle);
+                GraphicsObject.Dispose();
+                //Return the Scaling Factor
+                return ScreenScalingFactor;
+            }
+
+           Rectangle GetDisplayResolution()
+            {
+                var sf = GetWindowsScreenScalingFactor(false);
+                var screenWidth = Screen.PrimaryScreen.Bounds.Width * sf;
+                var screenHeight = Screen.PrimaryScreen.Bounds.Height * sf;
+                return new Rectangle(0,0,(int)screenWidth, (int)screenHeight);
+            }
         }
 
 
-
+        
         private void RulerForm_Load(object sender, EventArgs e)
         {
             LoadSettings();
-            
+            //SetProcessDPIAware();
             SetSelectedOption(UnitsBox, ruler);
             DoubleBuffered = true;
         }
@@ -602,7 +655,8 @@ namespace OnScreenRuler
 
         private void screenshotToolStripMenuItem_Click(object sender, EventArgs e)
         {
-
+            disableTransparency();
+            Screenshot();
         }
 
         private void transparentModeToolStripMenuItem_Click(object sender, EventArgs e)
@@ -610,20 +664,28 @@ namespace OnScreenRuler
 
             if (transparentModeToolStripMenuItem.Checked == true)
             {
-                // Set the window to be transparent
-                // so that it doesn't obscure the content underneath it
-                this.BackColor = Color.AliceBlue;
-                this.BackgroundImage = null;
-                openedImage = null;
-                TransparencyCheckBox2.Checked = true;
+                enableTransparency();
             }
             else
             {
-                // Set the window to be transparent
-                // so that it doesn't obscure the content underneath it
-                this.BackColor = Color.LightGray;
-                TransparencyCheckBox2.Checked = false;
+                disableTransparency();
             }
+        }
+
+        private void disableTransparency()
+        {
+            this.BackColor = Color.LightGray;
+            TransparencyCheckBox2.Checked = false;
+            transparentModeToolStripMenuItem.Checked = false;
+        }
+
+        private void enableTransparency()
+        {
+            this.BackColor = Color.AliceBlue;
+            this.BackgroundImage = null;
+            openedImage = null;
+            TransparencyCheckBox2.Checked = true;
+            transparentModeToolStripMenuItem.Checked = true;
         }
 
         private void closeImageToolStripMenuItem_Click(object sender, EventArgs e)
@@ -643,19 +705,11 @@ namespace OnScreenRuler
         {
             if (TransparencyCheckBox2.Checked == true)
             {
-                // Set the window to be transparent
-                // so that it doesn't obscure the content underneath it
-                this.BackColor = Color.AliceBlue;
-                this.BackgroundImage = null;
-                openedImage = null;
-                transparentModeToolStripMenuItem.Checked = true;
+                enableTransparency();
             }
             else
             {
-                // Set the window to be transparent
-                // so that it doesn't obscure the content underneath it
-                this.BackColor = Color.LightGray;
-                transparentModeToolStripMenuItem.Checked = false;
+                disableTransparency();
             }
 
         }
@@ -672,11 +726,14 @@ namespace OnScreenRuler
         private void presetsToolStripMenuItem_Click(object sender, EventArgs e)
         {
             CalPresets CalPresetsForm = new CalPresets();
-            if (CalPresetsForm.ShowDialog() == DialogResult.OK)
-            {
+            CalPresetsForm.PPMS = ruler.PPMS;
+            CalPresetsForm.PPMV = ruler.PPMV;
+            CalPresetsForm.LoadedPreset = ruler.LoadedPreset;
+            CalPresetsForm.ShowDialog();
                 ruler.PPMS = CalPresetsForm.PresetPPMS;
-                //ruler.PPMV = CalPresetsForm.PresetPPMV;
-            }
+                ruler.PPMV = CalPresetsForm.PresetPPMV;
+                ruler.LoadedPreset = CalPresetsForm.LoadedPreset;
+            
         }
 
         private void RulerForm_FormClosing(object sender, FormClosingEventArgs e)
@@ -708,7 +765,9 @@ namespace OnScreenRuler
         public double BPM { get; set; }
         public string CurrentUnit { get; set; }
         public string CurrentUnitAbbrev { get; set; }
+        public string LoadedPreset { get; set; }
         public double PPMS { get; set; }        // pixels per millisecond
+        public double PPMV { get; set; }        // pixels per mv
 
         public string CurrentLabel { get; set; }
         public int CurrentTickInterval { get; set; }
@@ -729,9 +788,11 @@ namespace OnScreenRuler
             Start = new Point(0, 0);
             End = new Point(0, 0);
             DistancePixels = 0;
+            LoadedPreset = null;
             CurrentUnit = "milliseconds";
             CurrentUnitAbbrev = "ms";
             PPMS = 306.0 / 789.0;   // 306 pixels per 789 ms (Mayo 12-Lead)
+            PPMV = 0.100;
             Milliseconds = DistancePixels / PPMS;
             Seconds = Milliseconds / 1000.0;
             BPM = 1.0 / (Seconds / 36000.0);
@@ -889,6 +950,8 @@ namespace OnScreenRuler
             return 0;
         }
     }
+
+    
 
     class Crosshair
     {

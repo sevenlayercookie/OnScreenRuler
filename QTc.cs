@@ -1,4 +1,4 @@
-﻿using OnScreenRuler;
+﻿using OnScreenCalipers;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 
-namespace On_Screen_Calipers
+namespace OnScreenCalipers
 {
     public partial class QTc : Form
     {

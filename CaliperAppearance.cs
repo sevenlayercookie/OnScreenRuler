@@ -1,4 +1,4 @@
-﻿using OnScreenRuler;
+﻿using OnScreenCalipers;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -9,7 +9,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace On_Screen_Calipers
+namespace OnScreenCalipers
 {
 
     public partial class CaliperAppearance : Form

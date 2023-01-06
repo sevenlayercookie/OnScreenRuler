@@ -1,4 +1,4 @@
-﻿namespace On_Screen_Calipers.Properties {
+﻿namespace OnScreenCalipers.Properties {
     
     
     // This class allows you to handle specific events on the settings class:
