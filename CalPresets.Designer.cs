@@ -37,7 +37,7 @@
             this.label4 = new System.Windows.Forms.Label();
             this.nameBox = new System.Windows.Forms.TextBox();
             this.LoadButton = new System.Windows.Forms.Button();
-            this.SelectedBox = new System.Windows.Forms.TextBox();
+            this.LoadedPresetBox = new System.Windows.Forms.TextBox();
             this.label1 = new System.Windows.Forms.Label();
             this.DeletePresetBtn = new System.Windows.Forms.Button();
             this.restoreDefaultsBtn = new System.Windows.Forms.Button();
@@ -127,14 +127,14 @@
             this.LoadButton.UseVisualStyleBackColor = true;
             this.LoadButton.Click += new System.EventHandler(this.LoadButton_Click);
             // 
-            // SelectedBox
+            // LoadedPresetBox
             // 
-            this.SelectedBox.Location = new System.Drawing.Point(299, 371);
-            this.SelectedBox.Name = "SelectedBox";
-            this.SelectedBox.ReadOnly = true;
-            this.SelectedBox.Size = new System.Drawing.Size(202, 22);
-            this.SelectedBox.TabIndex = 12;
-            this.SelectedBox.TabStop = false;
+            this.LoadedPresetBox.Location = new System.Drawing.Point(299, 371);
+            this.LoadedPresetBox.Name = "LoadedPresetBox";
+            this.LoadedPresetBox.ReadOnly = true;
+            this.LoadedPresetBox.Size = new System.Drawing.Size(202, 22);
+            this.LoadedPresetBox.TabIndex = 12;
+            this.LoadedPresetBox.TabStop = false;
             // 
             // label1
             // 
@@ -174,7 +174,7 @@
             this.ClientSize = new System.Drawing.Size(542, 408);
             this.Controls.Add(this.restoreDefaultsBtn);
             this.Controls.Add(this.DeletePresetBtn);
-            this.Controls.Add(this.SelectedBox);
+            this.Controls.Add(this.LoadedPresetBox);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.LoadButton);
             this.Controls.Add(this.label4);
@@ -204,7 +204,7 @@
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.TextBox nameBox;
         private System.Windows.Forms.Button LoadButton;
-        private System.Windows.Forms.TextBox SelectedBox;
+        private System.Windows.Forms.TextBox LoadedPresetBox;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Button DeletePresetBtn;
         private System.Windows.Forms.Button restoreDefaultsBtn;

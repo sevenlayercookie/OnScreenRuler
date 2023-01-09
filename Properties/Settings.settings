@@ -23,25 +23,7 @@
     <Setting Name="LabelFontColor" Type="System.Drawing.Color" Scope="User">
       <Value Profile="(Default)" />
     </Setting>
-    <Setting Name="Presets" Type="System.IO.MemoryStream" Scope="User">
-      <Value Profile="(Default)" />
-    </Setting>
-    <Setting Name="Setting" Type="System.String" Scope="User">
-      <Value Profile="(Default)">test1</Value>
-    </Setting>
-    <Setting Name="Setting1" Type="System.String" Scope="User">
-      <Value Profile="(Default)" />
-    </Setting>
-    <Setting Name="Setting2" Type="OnScreenCalipers.CalPresets" Scope="User">
-      <Value Profile="(Default)" />
-    </Setting>
     <Setting Name="PresetsArray" Type="OnScreenCalipers.Preset[]" Scope="User">
-      <Value Profile="(Default)" />
-    </Setting>
-    <Setting Name="Setting4" Type="System.String" Scope="User">
-      <Value Profile="(Default)" />
-    </Setting>
-    <Setting Name="Setting5" Type="System.String" Scope="User">
       <Value Profile="(Default)" />
     </Setting>
   </Settings>

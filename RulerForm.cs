@@ -3,14 +3,18 @@ using OnScreenCalipers.Properties;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Configuration;
 using System.Data;
+using System.Diagnostics.Contracts;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Drawing.Imaging;
 using System.Drawing.Text;
 using System.Linq;
+using System.Runtime;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
+using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -60,7 +64,7 @@ namespace OnScreenCalipers
             isDragging = false;
 
         }
-        
+
         private void SetSelectedOption(ComboBox unitsBox, Ruler ruler)
         {
             // Set the selected option of the unitsBox combo box
@@ -91,9 +95,9 @@ namespace OnScreenCalipers
             // load values from settings
             // ruler.EnableTicks = CaliperAppearanceForm.DialogTickMarksEnabled;
             // draw image if it is present
-            if (openedImage != null)
+            if (openedImage != null && transparency == false)
             {
-                e.Graphics.DrawImage(openedImage, 0, 0);
+                e.Graphics.DrawImage(openedImage, 0, menuStrip1.Size.Height);
             }
 
             //DrawBorder(); // draw border around window
@@ -133,7 +137,7 @@ namespace OnScreenCalipers
                 int tickInterval = ruler.CurrentTickInterval; // in pixels (should scale with PPMS)
 
                 //Pen TickPen = new Pen(Pens.Lime.Brush, 1);
-
+                
                 for (int i = tickInterval; i < Math.Abs(length); i += tickInterval)
                 {
                     if (length > 0)
@@ -184,7 +188,7 @@ namespace OnScreenCalipers
 
         }
 
-        private int DrawBorder ()
+        private int DrawBorder()
         {
 
             Rectangle windowRect = new Rectangle(this.Location.X, this.Location.Y, this.Size.Width, this.Size.Height);
@@ -203,7 +207,7 @@ namespace OnScreenCalipers
         {
             base.OnMouseDown(e);
             // update textbox
-            UpdateCalibrateBox(ruler.getCurrentValue(), ruler.CurrentUnit);
+            UpdateCalibrateBox();
             newRuler = false;
             resizeStart = false;
             resizeEnd = false;
@@ -303,11 +307,11 @@ namespace OnScreenCalipers
                 if ((Math.Abs(e.Location.Y - ruler.Start.Y) < clickTolerance && e.Location.X > ruler.Start.X && e.Location.X < ruler.End.X) || (Math.Abs(e.Location.X - ruler.Start.X) < clickTolerance) || Math.Abs(e.Location.X - ruler.End.X) < clickTolerance)
                 {
                     if ((Math.Abs(e.Location.X - ruler.Start.X) < clickTolerance) || Math.Abs(e.Location.X - ruler.End.X) < clickTolerance)
-                            {
+                    {
                         this.Cursor = Cursors.SizeWE;
                     }
                     else {
-                        this.Cursor = Cursors.Hand; 
+                        this.Cursor = Cursors.Hand;
                     }
 
                 }
@@ -349,20 +353,32 @@ namespace OnScreenCalipers
                 int dx = ruler.End.X - ruler.Start.X;
                 ruler.DistancePixels = dx;
                 mouseLocation = e.Location;
-                // update QT calc dialog box
-                QTcForm.DialogQT = ruler.Milliseconds;
-                
-                // Redraw the ruler
+                // update QT calc dialog box (if dialog exists)
+                ruler.UpdateRuler();
+                if (QTcForm != null)
+                {
+                    QTcForm.DialogQT = ruler.Milliseconds;
+                    QTcForm.QTBox.Text = Math.Abs(Math.Round(ruler.Milliseconds)).ToString();
+                    QTcForm.Invalidate();
+                }
+
+                // Redraw the ruler and calibratebox
+                UpdateCalibrateBox();
                 this.Invalidate();
             }
             crosshair.Location = e.Location;
             this.Invalidate();
+
         }
 
-        public int UpdateCalibrateBox(double value, string unit)
+        public int UpdateCalibrateBox()
         {
             double endValue = 0;
-            value = Math.Abs(value);
+
+            
+            double value = Math.Abs(ruler.getCurrentValue());
+            string unit = ruler.CurrentUnit;
+           
             if (unit == "seconds")
             {
                 endValue = Math.Round(value, 2);
@@ -372,7 +388,14 @@ namespace OnScreenCalipers
                 endValue = Math.Round(value);
             }
             CalibrateTextBox.Text = endValue.ToString();
-            CalibrateUnitLabel.Text = ruler.GetUnitAbbrev();
+            // update units box if necessary
+            if (UnitsBox.SelectedText != ruler.CurrentUnitAbbrev)
+            {
+                SetSelectedOption(UnitsBox, ruler);
+            }
+            // update preset label
+            presetLabel.Text = ruler.LoadedPreset;
+            //CalibrateUnitLabel.Text = ruler.GetUnitAbbrev();
             return 0;
         }
 
@@ -381,7 +404,7 @@ namespace OnScreenCalipers
         {
             base.OnMouseUp(e);
             // update textbox
-            UpdateCalibrateBox(ruler.getCurrentValue(), ruler.CurrentUnit);
+            UpdateCalibrateBox();
 
             // swap start and end if ends cross
             if (ruler.DistancePixels < 0)
@@ -431,19 +454,24 @@ namespace OnScreenCalipers
                 
                 Rectangle wholeScreen = GetDisplayResolution();          // gets whole screen
 
-                
-
+                // find coordinates of client area (area where controls can be placed) (does it include menubar?)
+                Rectangle clientArea = this.ClientRectangle; // expressed in client coordinates, where 0,0 is top left of client windows
+                Rectangle clientArea2 = this.RectangleToScreen(clientArea); // expressed in screen coordinates, where 0,0 is top left of entire screen
+                clientArea2.Y += menuStrip1.Height; // account for the menu bar
+                this.Hide();
                 Rectangle windowRect = new Rectangle(this.Location.X, this.Location.Y, this.Size.Width, this.Size.Height);
-                Rectangle resolution = windowRect;
+                Rectangle fullScreen = Screen.AllScreens[0].Bounds;
+                Rectangle resolution = clientArea2;
                 openedImage = new Bitmap(resolution.Width, resolution.Height, PixelFormat.Format32bppArgb);
-                Rectangle captureRectangle = Screen.AllScreens[0].Bounds;
+                
                 Graphics captureGraphics = Graphics.FromImage(openedImage);
                 captureGraphics.CopyFromScreen(resolution.Left, resolution.Top, 0, 0, resolution.Size);
+                // fullscreen: captureGraphics.CopyFromScreen(0, 0, 0, 0, fullScreen.Size);
 
                 // select the save location of the captured screenshot
                 openedImage.Save(@"C:\Users\seven\Desktop\test\screenshot.jpeg", ImageFormat.Jpeg);
-                
 
+                this.Show();
                 // show a message to let the user know that a screenshot has been captured
                 //MessageBox.Show("Screenshot taken! Press `OK` to continue...");
             }
@@ -486,14 +514,76 @@ namespace OnScreenCalipers
             }
         }
 
+        private void ImagePaste()
+        {
+            if(Clipboard.ContainsImage())
+            {
+                disableTransparency();
+                Image pasted = Clipboard.GetImage();
+                openedImage = pasted;
+            }
+        }
 
         
         private void RulerForm_Load(object sender, EventArgs e)
         {
+
+            Settings.Default.SettingChanging += new SettingChangingEventHandler(SettingChanging);
             LoadSettings();
-            //SetProcessDPIAware();
+            SetProcessDPIAware();
             SetSelectedOption(UnitsBox, ruler);
             DoubleBuffered = true;
+        }
+        public class ValidCheck
+        {
+            public bool IsValid = true;
+            public object ValidatedValue;
+        }
+        private void SettingChanging(Object sender, SettingChangingEventArgs e)
+        {
+            if (e.SettingName.Equals("LastPPMS"))
+            {
+
+                if ((double)e.NewValue <= 0 || (double)e.NewValue > 10000)
+                {
+                    e.Cancel = true;
+                    // Inform the user.
+                }
+            }
+            if (e.SettingName.Equals("PresetsArray"))
+            {
+                var presetsArray = (Preset[])e.NewValue;
+
+                if (presetsArray != null)
+                {
+                    for (int j = 0; j < presetsArray.Length; j++)
+                    {
+
+                        if (presetsArray[j].PPMS <= 0 || presetsArray[j].PPMS > 10000)
+                        {
+                            e.Cancel = true;
+                            // Inform the user.
+                        }
+                        if (presetsArray[j].Name == null)
+                        {
+                            e.Cancel = true;
+                            // Inform the user.
+                        }
+                    }
+
+                }
+                
+            }
+            if (e.SettingName.Equals("LineWidth"))
+            {
+
+                if ((int)e.NewValue < 1 || (int)e.NewValue > 50)
+                {
+                    e.Cancel = true;
+                    // Inform the user.
+                }
+            }
+            
         }
 
         private void listBox1_SelectedIndexChanged(object sender, EventArgs e)
@@ -507,7 +597,7 @@ namespace OnScreenCalipers
             // based on the selected option of the unitsBox combo box
             ruler.CurrentUnit = (string)UnitsBox.SelectedItem;
             // update textbox
-            UpdateCalibrateBox(ruler.getCurrentValue(), ruler.CurrentUnit);
+            UpdateCalibrateBox();
             this.Invalidate();
 
         }
@@ -539,29 +629,54 @@ namespace OnScreenCalipers
 
         private void CalibrateBtn_Click(object sender, EventArgs e)
         {
+            Validator validator = new Validator();
+            string message = "";
+            bool isValid = true;
+            try
+            {
+                isValid = validator.isPPMSValid(double.Parse(CalibrateTextBox.Text));
+            }
+            catch
+            {
+                
+                isValid = false;
+            }
+            if (ruler.DistancePixels <= 0)
+            {
+                isValid = false;
+            }
+            if (isValid)
+            {
+                double calibrateValue = double.Parse(CalibrateTextBox.Text);
+                if (ruler.CurrentUnit == "pixels")
+                {
+                    // can't calibrate pixels.... they're literally just there
 
-            double calibrateValue = double.Parse(CalibrateTextBox.Text);
-            if (ruler.CurrentUnit == "pixels")
-            {
-                // can't calibrate pixels.... they're literally just there
-
+                }
+                if (ruler.CurrentUnit == "milliseconds")
+                {
+                    ruler.PPMS = ruler.DistancePixels / calibrateValue;
+                }
+                if (ruler.CurrentUnit == "seconds")
+                {
+                    ruler.PPMS = ruler.DistancePixels / ruler.convertUnits(calibrateValue, "sec", "ms");
+                }
+                if (ruler.CurrentUnit == "bpm")
+                {
+                    ruler.PPMS = ruler.DistancePixels / ruler.convertUnits(calibrateValue, "bpm", "ms");
+                }
+                Settings.Default["LastPPMS"] = ruler.PPMS;
+                // update preset label
+                ruler.LoadedPreset = null;
+                presetLabel.Text = ruler.LoadedPreset;
+                ruler.UpdateRuler();
+                Settings.Default.Save();
+                this.Invalidate();
             }
-            if (ruler.CurrentUnit == "milliseconds")
+            else
             {
-                ruler.PPMS = ruler.DistancePixels / calibrateValue;
+                //MessageBox.Show("Check for valid inputs.");
             }
-            if (ruler.CurrentUnit == "seconds")
-            {
-                ruler.PPMS = ruler.DistancePixels / ruler.convertUnits(calibrateValue, "sec", "ms");
-            }
-            if (ruler.CurrentUnit == "bpm")
-            {
-                ruler.PPMS = ruler.DistancePixels / ruler.convertUnits(calibrateValue, "bpm", "ms");
-            }
-            Settings.Default["LastPPMS"] = ruler.PPMS;
-            ruler.UpdateRuler();
-            Settings.Default.Save();
-            this.Invalidate();
 
         }
 
@@ -615,13 +730,16 @@ namespace OnScreenCalipers
         private int LoadSettings()
         {
             Settings.Default.Reload(); // Load settings from application configuration file
-            if (Settings.Default.LabelFont == null)
+            Validator validator = new Validator();
+            bool IsValid = validator.IsValid(Settings.Default);
+            if (Settings.Default.LabelFont == null || IsValid == false) // if first run or invalid settings, restoredefaults
             {
-                SaveSettings(); // initialize first run settings
+                SaveSettings(); // initialize first run settings 
                 return 1;
             }
             else
             {
+                ValidateSettings();
                 ruler.PPMS = Settings.Default.LastPPMS;
                 ruler.Font = Settings.Default.LabelFont;
                 ruler.FontColor = Settings.Default.LabelFontColor;
@@ -647,12 +765,27 @@ namespace OnScreenCalipers
 
                 openedImage = new Bitmap(openFileDialog1.OpenFile());
                 //this.BackgroundImage = openedImage;
+                /*
                 transparentModeToolStripMenuItem.Checked = false;
                 TransparencyCheckBox2.Checked = false;
                 this.BackColor = Color.LightGray;
+                */
+                disableTransparency();
 
             }
 
+        }
+
+        private void SetTransparent(bool boolean)
+        {
+            if (boolean)
+            {
+                enableTransparency();
+            }
+            else
+            {
+                disableTransparency();
+            }
         }
 
         private void exitToolStripMenuItem_Click(object sender, EventArgs e)
@@ -679,8 +812,10 @@ namespace OnScreenCalipers
             }
         }
 
+        public bool transparency = true;
         private void disableTransparency()
         {
+            transparency = false;
             this.BackColor = Color.LightGray;
             TransparencyCheckBox2.Checked = false;
             transparentModeToolStripMenuItem.Checked = false;
@@ -688,6 +823,7 @@ namespace OnScreenCalipers
 
         private void enableTransparency()
         {
+            transparency = true;
             this.BackColor = Color.AliceBlue;
             this.BackgroundImage = null;
             openedImage = null;
@@ -720,26 +856,35 @@ namespace OnScreenCalipers
             }
 
         }
-        QTc QTcForm = new QTc();
+
+        public QTc QTcForm;
         private void qTcToolStripMenuItem_Click(object sender, EventArgs e)
         {
+            QTcForm = new QTc(this);
             ruler.CurrentUnit = "milliseconds";
             ruler.UpdateRuler();
+            UpdateAllGUI();
             QTcForm.DialogQT = ruler.Milliseconds;
             QTcForm.TopMost = this.TopMost;
             QTcForm.Show();
         }
 
+        private int UpdateAllGUI()
+        {
+            UpdateCalibrateBox();
+            return 0;
+        }
         private void presetsToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            CalPresets CalPresetsForm = new CalPresets();
+            CalPresets CalPresetsForm = new CalPresets(this);
             CalPresetsForm.PPMS = ruler.PPMS;
             CalPresetsForm.PPMV = ruler.PPMV;
             CalPresetsForm.LoadedPreset = ruler.LoadedPreset;
-            CalPresetsForm.ShowDialog();
+            CalPresetsForm.ShowDialog(this);
                 ruler.PPMS = CalPresetsForm.PresetPPMS;
                 ruler.PPMV = CalPresetsForm.PresetPPMV;
                 ruler.LoadedPreset = CalPresetsForm.LoadedPreset;
+                presetLabel.Text = ruler.LoadedPreset;
             
         }
 
@@ -766,6 +911,108 @@ namespace OnScreenCalipers
                 CalibrateBtn_Click(sender, e);
             }
         }
+
+        private void RulerForm_KeyDown(object sender, KeyEventArgs e)
+        {
+            // handle CTRL + V (paste)
+            if (e.Control && e.KeyCode == Keys.V)
+            {
+                if (Clipboard.ContainsImage())
+                {
+                    ImagePaste();
+                }
+            }
+        }
+
+        private void menuStrip1_MouseMove(object sender, MouseEventArgs e)
+        {
+            this.Cursor = Cursors.Default;
+        }
+
+        private void RulerForm_DpiChanged(object sender, DpiChangedEventArgs e)
+        {
+
+        }
+
+        public Ruler ValidateRulerSettings(Ruler testRuler)
+        {
+            if (testRuler.CurrentTickInterval < 1 || testRuler.CurrentTickInterval > 10000)
+            {
+                testRuler.CurrentTickInterval = 20;
+            }
+
+            return testRuler;
+        }
+      
+        public int ValidateSettings(double PPMS, double PPMV, int lineWidth)
+        {
+            if (PPMS <= 0 || PPMS > 10000 || Double.IsNaN(PPMS))
+            {
+                return 1;
+            }
+            if (PPMV <= 0 || PPMV > 10000 || Double.IsNaN(PPMV))
+            {
+                return 1;
+            }
+            if (lineWidth < 1 || lineWidth > 50)
+            {
+                return 1;
+            }
+            return 0;
+        }
+
+        public int ValidateSettings()
+        {
+            int i = 0;
+            Settings.Default.LastPPMS = validatePPMS(Settings.Default.LastPPMS);
+            /*
+            if (PPMV < 0 || PPMV > 10000 || Double.IsNaN(PPMV))
+            {
+                return 1;
+            }
+            */
+            if (Settings.Default.LineWidth < 1 || Settings.Default.LineWidth > 50)
+            {
+                Settings.Default.LineWidth = 2;
+                i = 1;
+            }
+            if (Settings.Default.PresetsArray != null)
+            {
+                for (int j = 0; j < Settings.Default.PresetsArray.Length; j++)
+                {
+                    Settings.Default.PresetsArray[j].PPMS = validatePPMS(Settings.Default.PresetsArray[j].PPMS);
+                    if (Settings.Default.PresetsArray[j].Name == null)
+                    {
+                        Settings.Default.PresetsArray[j] = null;
+                    }
+                }
+                
+            }
+            return i;
+
+            
+        }
+        double validatePPMS(double ppms)
+        {
+            if (ppms <= 0 || ppms > 10000 || Double.IsNaN(ppms))
+            {
+                return 0.100;
+            }
+            return ppms;
+        }
+
+        Preset validatePreset(Preset preset)
+        {
+            preset.PPMS = validatePPMS(preset.PPMS);
+            preset.PPMV = validatePPMS(preset.PPMV);
+            if (preset.Name == null)
+            {
+                preset = null;
+            }
+            return preset;
+        }
+
+
     }
 
     // A class to represent the on-screen ruler
@@ -829,6 +1076,7 @@ namespace OnScreenCalipers
 
         }
 
+
         public string GetUnitAbbrev()
         {
             if (CurrentUnit == "pixels")
@@ -890,7 +1138,7 @@ namespace OnScreenCalipers
             }
             if (CurrentUnit == "milliseconds")
             {
-                return Milliseconds;
+                return Math.Round(Milliseconds);
             }
             if (CurrentUnit == "seconds")
             {

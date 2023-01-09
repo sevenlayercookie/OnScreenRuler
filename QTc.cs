@@ -17,7 +17,7 @@ namespace OnScreenCalipers
     {
         public double DialogQT = 0;
         public bool DialogTopmost = false;
-        public QTc()
+        public QTc(Form RulerForm)
         {
             InitializeComponent();
         }
@@ -103,8 +103,8 @@ namespace OnScreenCalipers
 
         private void QTc_Load(object sender, EventArgs e)
         {
-            QTBox.Text = DialogQT.ToString("N0");
-            this.TopMost = DialogTopmost;
+            QTBox.Text = DialogQT.ToString();
+            this.TopMost = true;
         }
     }
 }

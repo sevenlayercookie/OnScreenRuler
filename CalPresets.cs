@@ -3,8 +3,10 @@ using System;
 using System.CodeDom;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Configuration;
 using System.Data;
 using System.Drawing;
+using System.Drawing.Text;
 using System.IO;
 using System.Linq;
 using System.Runtime.Serialization;
@@ -14,6 +16,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml.Serialization;
+using static OnScreenCalipers.CalPresets;
 
 namespace OnScreenCalipers
 {
@@ -22,8 +25,9 @@ namespace OnScreenCalipers
         public double PPMS { get; set; }
         public double PPMV { get; set; }
         public string LoadedPreset { get; set; }
+        
 
-        public CalPresets()
+        public CalPresets(RulerForm rulerForm)
         {
             InitializeComponent();
         }
@@ -64,10 +68,15 @@ namespace OnScreenCalipers
         {
             if (presetList.SelectedItems.Count == 1)
             {
-                SelectedBox.Text = PresetArray[presetList.SelectedIndex].Name;
+                LoadedPresetBox.Text = PresetArray[presetList.SelectedIndex].Name;
                 LoadedPreset = PresetArray[presetList.SelectedIndex].Name;
                 PresetPPMS = PresetArray[presetList.SelectedIndex].PPMS;
                 PresetPPMV = PresetArray[presetList.SelectedIndex].PPMV;
+                RulerForm rulerForm = (RulerForm)this.Owner;
+                rulerForm.ruler.PPMS= PresetPPMS;
+                rulerForm.ruler.UpdateRuler();
+                rulerForm.UpdateCalibrateBox();
+                rulerForm.Invalidate();
                 //DialogResult = DialogResult.OK;
             }
         }
@@ -80,9 +89,11 @@ namespace OnScreenCalipers
                 presetList.Items.Add(PresetArray[i].Name);
             }
             */
-            if (CheckPresetMatches())
+            this.TopMost= true;
+            //if (CheckPresetMatches())
+            if (LoadedPreset != null)
             {
-                SelectedBox.Text = LoadedPreset;
+                LoadedPresetBox.Text = LoadedPreset;
             }
             PPMSBox.Text = PPMS.ToString("N3");
             PPMVBox.Text = PPMV.ToString("N3");
@@ -113,30 +124,50 @@ namespace OnScreenCalipers
 
         private void SaveButton_Click(object sender, EventArgs e)
         {
-            if (nameBox.TextLength != 0 && PPMSBox.TextLength != 0 && PPMVBox.TextLength != 0)
+            bool valid = true;
+            Validator validator = new Validator();
+            Preset newPreset = null;
+            try
             {
-                bool exists = false;
-                for (int i = 0; i < PresetArray.Length; i++)
+                newPreset = new Preset(nameBox.Text, double.Parse(PPMSBox.Text), double.Parse(PPMVBox.Text));
+            }
+            catch 
+            { 
+                valid = false;
+            }
+            if (valid && validator.IsValid(newPreset))
+            { 
+                if (nameBox.TextLength != 0 && PPMSBox.TextLength != 0 && PPMVBox.TextLength != 0)
                 {
-                    if (nameBox.Text == PresetArray[i].Name)
+                    bool exists = false;
+                    for (int i = 0; i < PresetArray.Length; i++)
                     {
-                        exists = true;
-                        PresetArray[i].Name = nameBox.Text;
-                        PresetArray[i].PPMS = double.Parse(PPMSBox.Text);
-                        PresetArray[i].PPMV = double.Parse(PPMVBox.Text);
+                        if (nameBox.Text == PresetArray[i].Name)
+                        {
+                            exists = true;
+                            PresetArray[i].Name = nameBox.Text;
+                            PresetArray[i].PPMS = double.Parse(PPMSBox.Text);
+                            PresetArray[i].PPMV = double.Parse(PPMVBox.Text);
+                            RefreshPresetList();
+                            SavePresets();
+                        }
+                    }
+                    if (!exists)
+                    {
+                        PresetArray = AppendPreset(PresetArray, new Preset(nameBox.Text, double.Parse(PPMSBox.Text), double.Parse(PPMVBox.Text)));
                         RefreshPresetList();
                         SavePresets();
                     }
-                }
-                if (!exists)
-                {
-                    PresetArray = AppendPreset(PresetArray, new Preset(nameBox.Text, double.Parse(PPMSBox.Text), double.Parse(PPMVBox.Text)));
-                    RefreshPresetList();
-                    SavePresets();
-                }
 
+                }
+                }
+            else
+            {
+                MessageBox.Show("Check for valid input and try again.");
             }
         }
+
+        
 
         /*
         public Preset GetLoadedPreset()
@@ -293,5 +324,136 @@ namespace OnScreenCalipers
         }
     }
 
+    public class Validator
+    {
+        public bool IsValid(object value)
+        {
+            if (value == null)
+            {
+                return false;
+            }
+            if (value.GetType() == typeof(double))
+            {
 
+                return isPPMSValid((double)value);
+            }
+            if (value.GetType() == typeof(string))
+            {
+
+                return isNameValid((string)value);
+            }
+            if (value.GetType() == typeof(int))
+            {
+
+                if ((int)value < 1 || (int)value > 100)
+                {
+                    return false;
+                }
+            }
+            if (value.GetType() == typeof(Preset))
+            {
+                Preset preset = (Preset)value;
+                if (!isPPMSValid(preset.PPMS))
+                { return false; }
+                if (!isPPMSValid(preset.PPMV))
+                { return false; }
+                if (!isNameValid(preset.Name))
+                { return false; }
+            }
+
+            if (value.GetType() == typeof(Preset[]))
+            {
+                for (int i = 0; i < ((Preset[])value).Length; i++)
+                {
+                    var preset = ((Preset[])value)[i];
+                    if (!isPPMSValid(preset.PPMS))
+                    { return false; }
+                    if (!isPPMSValid(preset.PPMV))
+                    { return false; }
+                    if (!isNameValid(preset.Name))
+                    { return false; }
+                }
+            }
+
+            if (value.GetType() == typeof(Settings))
+            {
+                Settings settings = (Settings)value;
+                if (!isPPMSValid(settings.LastPPMS))
+                    {  return false; }
+                if (!isIntValid(settings.LineWidth))
+                { return false; }
+                if (!isPresetArrayValid(settings.PresetsArray))
+                {
+                    return false;
+                }
+            }
+
+            bool IsValid = true;
+            return IsValid;
+        }
+
+
+        public bool isPPMSValid(double value)
+        {
+            if (value.GetType() == typeof(double))
+            {
+
+                if ((double)value <= 0 || (double)value > 100000)
+                {
+                    return false;
+                }
+            }
+            return true;
+        }
+
+        public bool isIntValid(int value)
+        {
+            if (value.GetType() == typeof(int))
+            {
+
+                if ((int)value < 1 || (int)value > 100)
+                {
+                    return false;
+                }
+            }
+            return true;
+        }
+
+        public bool isNameValid(string value)
+        {
+            if ((string)value == "")
+            {
+                return false;
+            }
+            return true;
+        }
+
+        public bool isPresetValid(Preset preset)
+        {
+            if (preset == null) { return false; }
+                    if (!isPPMSValid(preset.PPMS))
+                    { return false; }
+                    if (!isPPMSValid(preset.PPMV))
+                    { return false; }
+                    if (!isNameValid(preset.Name))
+                    { return false; }
+                
+            
+            return true;
+        }
+
+        public bool isPresetArrayValid(Preset[] presetArray)
+        {
+            if (presetArray == null) { return false; }
+                for (int i = 0; i < presetArray.Length; i++)
+                {
+                    if (!isPresetValid(presetArray[i]))
+                    {
+                        return false;
+                    }
+
+                }
+            return true;
+        }
+    }
 }
