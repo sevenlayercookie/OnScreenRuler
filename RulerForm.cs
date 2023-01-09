@@ -544,7 +544,7 @@ namespace OnScreenCalipers
             if (e.SettingName.Equals("LastPPMS"))
             {
 
-                if ((double)e.NewValue <= 0 || (double)e.NewValue > 10000)
+                if (!validator.isPPMSValid((double)e.NewValue))
                 {
                     e.Cancel = true;
                     // Inform the user.
@@ -554,30 +554,19 @@ namespace OnScreenCalipers
             {
                 var presetsArray = (Preset[])e.NewValue;
 
-                if (presetsArray != null)
-                {
-                    for (int j = 0; j < presetsArray.Length; j++)
+                
+                    if (!validator.isPresetArrayValid(presetsArray) || (presetsArray == null))
                     {
-
-                        if (presetsArray[j].PPMS <= 0 || presetsArray[j].PPMS > 10000)
-                        {
-                            e.Cancel = true;
-                            // Inform the user.
-                        }
-                        if (presetsArray[j].Name == null)
-                        {
-                            e.Cancel = true;
-                            // Inform the user.
-                        }
+                        e.Cancel = true;
                     }
 
-                }
+                
                 
             }
             if (e.SettingName.Equals("LineWidth"))
             {
 
-                if ((int)e.NewValue < 1 || (int)e.NewValue > 50)
+                if (!validator.isIntValid(((int)e.NewValue)))
                 {
                     e.Cancel = true;
                     // Inform the user.
@@ -624,13 +613,13 @@ namespace OnScreenCalipers
 
         private void CalibrateTextBox_change(object sender, EventArgs e)
         {
-
+ 
         }
 
         private void CalibrateBtn_Click(object sender, EventArgs e)
         {
-            Validator validator = new Validator();
-            string message = "";
+            //Validator validator = new Validator();
+            //string message = "";
             bool isValid = true;
             try
             {
@@ -713,24 +702,35 @@ namespace OnScreenCalipers
             }
         }
 
+        Validator validator = new Validator();
         private int SaveSettings()
         {
+            if (!validator.isPPMSValid(ruler.PPMS))
+            {
+                ruler.PPMS = 0.100;
+            }
             Settings.Default["LastPPMS"] = ruler.PPMS;
             Settings.Default["LabelFont"] = ruler.Font;
-            Settings.Default.LabelFontColor = ruler.FontColor;
-            Settings.Default["LabelBackColor"] = ruler.LabelBackColor;
-            Settings.Default["LineColor"] = ruler.Color;
+                Settings.Default.LabelFontColor = ruler.FontColor;
+                Settings.Default["LabelBackColor"] = ruler.LabelBackColor;
+                Settings.Default["LineColor"] = ruler.Color;
+            if (!validator.isIntValid(ruler.lineWidth))
+            {
+                ruler.lineWidth = 2;
+            }
             Settings.Default["LineWidth"] = ruler.lineWidth;
             Settings.Default["TicksEnabled"] = ruler.EnableTicks;
-            //ruler.UpdateRuler();
-            //Settings.Default["Ruler"] = ruler;
-            Settings.Default.Save(); // Saves settings in application configuration file
-            return 0;
+            
+                //ruler.UpdateRuler();
+                //Settings.Default["Ruler"] = ruler;
+                Settings.Default.Save(); // Saves settings in application configuration file
+                return 0;
+            
         }
         private int LoadSettings()
         {
             Settings.Default.Reload(); // Load settings from application configuration file
-            Validator validator = new Validator();
+            
             bool IsValid = validator.IsValid(Settings.Default);
             if (Settings.Default.LabelFont == null || IsValid == false) // if first run or invalid settings, restoredefaults
             {

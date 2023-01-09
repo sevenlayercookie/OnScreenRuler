@@ -121,11 +121,11 @@ namespace OnScreenCalipers
                 presetList.Items.Add(PresetArray[i].Name);
             }
         }
-
+        Validator validator = new Validator();
         private void SaveButton_Click(object sender, EventArgs e)
         {
             bool valid = true;
-            Validator validator = new Validator();
+            
             Preset newPreset = null;
             try
             {
@@ -326,6 +326,10 @@ namespace OnScreenCalipers
 
     public class Validator
     {
+        public Validator()
+        {
+
+        }
         public bool IsValid(object value)
         {
             if (value == null)
@@ -387,6 +391,17 @@ namespace OnScreenCalipers
                     return false;
                 }
             }
+
+            if (value.GetType() == typeof(Ruler))
+            {
+                Ruler ruler = (Ruler)value;
+                if (!isPPMSValid(ruler.PPMS))
+                { return false; }
+                if (!isIntValid(ruler.lineWidth))
+                { return false; }
+              
+            }
+
 
             bool IsValid = true;
             return IsValid;
@@ -455,5 +470,8 @@ namespace OnScreenCalipers
                 }
             return true;
         }
+
+
     }
+
 }
