@@ -10,31 +10,39 @@ using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Drawing.Imaging;
 using System.Drawing.Text;
+using System.IO;
 using System.Linq;
+using System.Net;
 using System.Runtime;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Security.Cryptography;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Windows.Forms.PropertyGridInternal;
+using System.Windows.Forms.VisualStyles;
+using static System.Net.Mime.MediaTypeNames;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 
 namespace OnScreenCalipers
 {
     public partial class RulerForm : Form
     {
         public Ruler ruler;
+        public Border border;
         private Crosshair crosshair;
         private bool isDragging;
         private Point mouseLocation = new Point(0, 0);
-        private Button leftButton;
-        private Button rightButton;
+        private System.Windows.Forms.Button leftButton;
+        private System.Windows.Forms.Button rightButton;
         public RulerForm()
         {
             InitializeComponent();
             //this.ControlBox = true;
             ruler = new Ruler();
+            border = new Border(4, Color.Yellow, false);
             // Set the window to be transparent
             // so that it doesn't obscure the content underneath it
             this.TransparencyKey = Color.AliceBlue;
@@ -48,13 +56,13 @@ namespace OnScreenCalipers
             crosshair = new Crosshair();
 
             // button intitialisation
-            leftButton = new Button();
+            leftButton = new System.Windows.Forms.Button();
             leftButton.Size = new Size(80, 40);
             leftButton.Text = "<";
             leftButton.BackColor = Color.White;
             leftButton.Click += LeftButton_Click;
 
-            rightButton = new Button();
+            rightButton = new System.Windows.Forms.Button();
             rightButton.Size = new Size(80, 40);
             rightButton.Text = ">";
             rightButton.BackColor = Color.White;
@@ -65,7 +73,7 @@ namespace OnScreenCalipers
 
         }
 
-        private void SetSelectedOption(ComboBox unitsBox, Ruler ruler)
+        private void SetSelectedOption(System.Windows.Forms.ComboBox unitsBox, Ruler ruler)
         {
             // Set the selected option of the unitsBox combo box
             // based on the value of the Units property of the ruler object
@@ -101,6 +109,10 @@ namespace OnScreenCalipers
             }
 
             //DrawBorder(); // draw border around window
+            if (border.Enabled)
+            {
+                DrawBorder(e);
+            }
             // Calculate the length and angle of the ruler
             int dx = ruler.End.X - ruler.Start.X;
             //int dy = ruler.End.Y - ruler.Start.Y;
@@ -137,7 +149,7 @@ namespace OnScreenCalipers
                 int tickInterval = ruler.CurrentTickInterval; // in pixels (should scale with PPMS)
 
                 //Pen TickPen = new Pen(Pens.Lime.Brush, 1);
-                
+
                 for (int i = tickInterval; i < Math.Abs(length); i += tickInterval)
                 {
                     if (length > 0)
@@ -188,19 +200,26 @@ namespace OnScreenCalipers
 
         }
 
-        private int DrawBorder()
+        private int DrawBorder(PaintEventArgs e)
         {
+            int BorderWidth = border.Width;
+            if (BorderWidth > 0)
+            {
+                Color BorderColor = border.Color;
+                Pen BorderPen = new Pen(BorderColor, BorderWidth);
+                Rectangle drawingArea = ClientRectangle;
+                drawingArea.Y += menuStrip1.Height + BorderWidth / 2;
+                drawingArea.X += BorderWidth / 2;
+                drawingArea.Height -= menuStrip1.Height + BorderWidth;
+                drawingArea.Width -= BorderWidth;
 
-            Rectangle windowRect = new Rectangle(this.Location.X, this.Location.Y, this.Size.Width, this.Size.Height);
-            Rectangle borderRect = new Rectangle(windowRect.X + 2, windowRect.Y + 2, windowRect.Width - 4, windowRect.Height - 4);
-
-            Graphics e = this.CreateGraphics();
-            Pen BorderPen = new Pen(Color.Blue, 4);
-            e.DrawRectangle(BorderPen, borderRect);
-            this.Invalidate();
+                e.Graphics.DrawRectangle(BorderPen, drawingArea);
+                //this.Invalidate();
+            }
             return 0;
         }
 
+      
 
 
         protected override void OnMouseDown(MouseEventArgs e)
@@ -375,10 +394,10 @@ namespace OnScreenCalipers
         {
             double endValue = 0;
 
-            
+
             double value = Math.Abs(ruler.getCurrentValue());
             string unit = ruler.CurrentUnit;
-           
+
             if (unit == "seconds")
             {
                 endValue = Math.Round(value, 2);
@@ -394,7 +413,7 @@ namespace OnScreenCalipers
                 SetSelectedOption(UnitsBox, ruler);
             }
             // update preset label
-            presetLabel.Text = ruler.LoadedPreset;
+            presetLabel.Text = ruler.LoadedPresetName;
             //CalibrateUnitLabel.Text = ruler.GetUnitAbbrev();
             return 0;
         }
@@ -451,7 +470,7 @@ namespace OnScreenCalipers
             {
                 // set the screenshot resolution based on your monitor's resolution
                 //Bitmap captureBitmap = new Bitmap(1024, 768, PixelFormat.Format32bppArgb);
-                
+
                 Rectangle wholeScreen = GetDisplayResolution();          // gets whole screen
 
                 // find coordinates of client area (area where controls can be placed) (does it include menubar?)
@@ -463,7 +482,7 @@ namespace OnScreenCalipers
                 Rectangle fullScreen = Screen.AllScreens[0].Bounds;
                 Rectangle resolution = clientArea2;
                 openedImage = new Bitmap(resolution.Width, resolution.Height, PixelFormat.Format32bppArgb);
-                
+
                 Graphics captureGraphics = Graphics.FromImage(openedImage);
                 captureGraphics.CopyFromScreen(resolution.Left, resolution.Top, 0, 0, resolution.Size);
                 // fullscreen: captureGraphics.CopyFromScreen(0, 0, 0, 0, fullScreen.Size);
@@ -505,26 +524,26 @@ namespace OnScreenCalipers
                 return ScreenScalingFactor;
             }
 
-           Rectangle GetDisplayResolution()
+            Rectangle GetDisplayResolution()
             {
                 var sf = GetWindowsScreenScalingFactor(false);
                 var screenWidth = Screen.PrimaryScreen.Bounds.Width * sf;
                 var screenHeight = Screen.PrimaryScreen.Bounds.Height * sf;
-                return new Rectangle(0,0,(int)screenWidth, (int)screenHeight);
+                return new Rectangle(0, 0, (int)screenWidth, (int)screenHeight);
             }
         }
 
         private void ImagePaste()
         {
-            if(Clipboard.ContainsImage())
+            if (Clipboard.ContainsImage())
             {
                 disableTransparency();
-                Image pasted = Clipboard.GetImage();
+                System.Drawing.Image pasted = Clipboard.GetImage();
                 openedImage = pasted;
             }
         }
 
-        
+
         private void RulerForm_Load(object sender, EventArgs e)
         {
 
@@ -554,14 +573,14 @@ namespace OnScreenCalipers
             {
                 var presetsArray = (Preset[])e.NewValue;
 
-                
-                    if (!validator.isPresetArrayValid(presetsArray) || (presetsArray == null))
-                    {
-                        e.Cancel = true;
-                    }
 
-                
-                
+                if (!validator.isPresetArrayValid(presetsArray) || (presetsArray == null))
+                {
+                    e.Cancel = true;
+                }
+
+
+
             }
             if (e.SettingName.Equals("LineWidth"))
             {
@@ -572,7 +591,7 @@ namespace OnScreenCalipers
                     // Inform the user.
                 }
             }
-            
+
         }
 
         private void listBox1_SelectedIndexChanged(object sender, EventArgs e)
@@ -613,7 +632,7 @@ namespace OnScreenCalipers
 
         private void CalibrateTextBox_change(object sender, EventArgs e)
         {
- 
+
         }
 
         private void CalibrateBtn_Click(object sender, EventArgs e)
@@ -627,7 +646,7 @@ namespace OnScreenCalipers
             }
             catch
             {
-                
+
                 isValid = false;
             }
             if (ruler.DistancePixels <= 0)
@@ -656,8 +675,8 @@ namespace OnScreenCalipers
                 }
                 Settings.Default["LastPPMS"] = ruler.PPMS;
                 // update preset label
-                ruler.LoadedPreset = null;
-                presetLabel.Text = ruler.LoadedPreset;
+                ruler.LoadedPresetName = null;
+                presetLabel.Text = ruler.LoadedPresetName;
                 ruler.UpdateRuler();
                 Settings.Default.Save();
                 this.Invalidate();
@@ -669,10 +688,12 @@ namespace OnScreenCalipers
 
         }
 
-        CaliperAppearance CaliperAppearanceForm = new CaliperAppearance();
+        CaliperAppearance CaliperAppearanceForm;
 
         private void caliperAppearanceToolStripMenuItem_Click(object sender, EventArgs e)
         {
+            // load new instance of form
+            CaliperAppearanceForm = new CaliperAppearance(this);
             // load current values into Dialog Form
             CaliperAppearanceForm.DialogCaliperLineWidthNewValue = ruler.lineWidth;
             CaliperAppearanceForm.DialogTickMarksEnabled = ruler.EnableTicks;
@@ -684,7 +705,10 @@ namespace OnScreenCalipers
             CaliperAppearanceForm.DialogTopmost = this.TopMost;
             //CaliperAppearanceForm.linecol
 
-            if (CaliperAppearanceForm.ShowDialog() == DialogResult.OK)
+
+            CaliperAppearanceForm.Show(this);
+            /*
+            if (CaliperAppearanceForm.ShowDialog(this) == DialogResult.OK)
             {
                 // save appearance settings
                 ruler.lineWidth = CaliperAppearanceForm.DialogCaliperLineWidthNewValue;
@@ -694,13 +718,24 @@ namespace OnScreenCalipers
                 ruler.FontColor = CaliperAppearanceForm.DialogSelectedFontColor;
                 ruler.LabelBackColor = CaliperAppearanceForm.DialogSelectedLabelBackColor;
                 ruler.LabelBackTransparent = CaliperAppearanceForm.LabelBackTransparent;
-                this.TopMost = CaliperAppearanceForm.DialogTopmost;
+                enableTopMost(CaliperAppearanceForm.DialogTopmost);
 
                 // save to persistent settings
                 SaveSettings();
 
             }
+            */
         }
+
+        public bool enableTopMost(bool boolean)
+        {
+            return this.TopMost = TopMostCheckBox.Checked = boolean; // return the input (true or false)
+            if (CaliperAppearanceForm != null)
+            {
+                CaliperAppearanceForm.DialogTopmost = boolean;
+            }
+        }
+
 
         Validator validator = new Validator();
         private int SaveSettings()
@@ -711,26 +746,40 @@ namespace OnScreenCalipers
             }
             Settings.Default["LastPPMS"] = ruler.PPMS;
             Settings.Default["LabelFont"] = ruler.Font;
-                Settings.Default.LabelFontColor = ruler.FontColor;
-                Settings.Default["LabelBackColor"] = ruler.LabelBackColor;
-                Settings.Default["LineColor"] = ruler.Color;
+            Settings.Default.LabelFontColor = ruler.FontColor;
+            Settings.Default["LabelBackColor"] = ruler.LabelBackColor;
+            Settings.Default["LineColor"] = ruler.Color;
             if (!validator.isIntValid(ruler.lineWidth))
             {
                 ruler.lineWidth = 2;
             }
             Settings.Default["LineWidth"] = ruler.lineWidth;
             Settings.Default["TicksEnabled"] = ruler.EnableTicks;
-            
-                //ruler.UpdateRuler();
-                //Settings.Default["Ruler"] = ruler;
-                Settings.Default.Save(); // Saves settings in application configuration file
-                return 0;
-            
+
+            // border settings
+            Settings.Default.BorderEnabled = border.Enabled;
+            Settings.Default.BorderColor = border.Color;
+            Settings.Default.BorderWidth = border.Width;
+
+            // presets
+            Settings.Default.LastSelectedPreset = ruler.LoadedPreset;
+
+            Settings.Default.Save(); // Saves settings in application configuration file
+            return 0;
+
         }
         private int LoadSettings()
         {
             Settings.Default.Reload(); // Load settings from application configuration file
+                                       // border settings
+            border.Enabled = Settings.Default.BorderEnabled;
+            border.Color = Settings.Default.BorderColor;
+            border.Width = Settings.Default.BorderWidth;
+
+            // last preset
+            ruler.LoadedPreset = Settings.Default.LastSelectedPreset;
             
+
             bool IsValid = validator.IsValid(Settings.Default);
             if (Settings.Default.LabelFont == null || IsValid == false) // if first run or invalid settings, restoredefaults
             {
@@ -748,16 +797,17 @@ namespace OnScreenCalipers
                 ruler.lineWidth = Settings.Default.LineWidth;
                 ruler.EnableTicks = Settings.Default.TicksEnabled;
                 //ruler = Settings.Default.Ruler;
-                ruler.UpdateRuler();               
+                ruler.UpdateRuler();
                 return 0;
 
             }
-            
+
+
         }
 
 
 
-        public Image openedImage;
+        public System.Drawing.Image openedImage;
         private void openImageToolStripMenuItem_Click(object sender, EventArgs e)
         {
             if (openFileDialog1.ShowDialog() == DialogResult.OK)
@@ -879,29 +929,35 @@ namespace OnScreenCalipers
             CalPresets CalPresetsForm = new CalPresets(this);
             CalPresetsForm.PPMS = ruler.PPMS;
             CalPresetsForm.PPMV = ruler.PPMV;
+            CalPresetsForm.LoadedPresetName = ruler.LoadedPresetName;
             CalPresetsForm.LoadedPreset = ruler.LoadedPreset;
             CalPresetsForm.ShowDialog(this);
-                ruler.PPMS = CalPresetsForm.PresetPPMS;
-                ruler.PPMV = CalPresetsForm.PresetPPMV;
-                ruler.LoadedPreset = CalPresetsForm.LoadedPreset;
-                presetLabel.Text = ruler.LoadedPreset;
-            
+            ruler.PPMS = CalPresetsForm.PresetPPMS;
+            ruler.PPMV = CalPresetsForm.PresetPPMV;
+            ruler.LoadedPresetName = CalPresetsForm.LoadedPresetName;
+            ruler.LoadedPreset = CalPresetsForm.LoadedPreset;
+            presetLabel.Text = ruler.LoadedPresetName;
+
         }
 
         private void RulerForm_FormClosing(object sender, FormClosingEventArgs e)
         {
-            Settings.Default.Save();
+            SaveSettings();
+            //Settings.Default.Save();
         }
 
         private void RulerForm_Resize(object sender, EventArgs e)
         {
-            DrawBorder();
+            panel1.Left = ClientRectangle.Right - panel1.Width;
+            panel1.Top = menuStrip1.Bottom;
+            this.Invalidate();
+            //DrawBorder();
         }
 
         private void checkBox1_CheckedChanged(object sender, EventArgs e)
         {
-            this.TopMost = checkBox1.Checked;
-            CaliperAppearanceForm.DialogTopmost = checkBox1.Checked;
+            //this.TopMost = TopMostCheckBox.Checked;
+            enableTopMost(TopMostCheckBox.Checked);
         }
 
         private void CalibrateTextBox_KeyPress(object sender, KeyPressEventArgs e)
@@ -943,7 +999,7 @@ namespace OnScreenCalipers
 
             return testRuler;
         }
-      
+
         public int ValidateSettings(double PPMS, double PPMV, int lineWidth)
         {
             if (PPMS <= 0 || PPMS > 10000 || Double.IsNaN(PPMS))
@@ -986,11 +1042,11 @@ namespace OnScreenCalipers
                         Settings.Default.PresetsArray[j] = null;
                     }
                 }
-                
+
             }
             return i;
 
-            
+
         }
         double validatePPMS(double ppms)
         {
@@ -1012,7 +1068,328 @@ namespace OnScreenCalipers
             return preset;
         }
 
+        private void helpToolStripMenuItem1_Click(object sender, EventArgs e)
+        {
+            Help helpForm = new Help();
+            helpForm.Show();
+        }
 
+        private void RulerForm_DragDrop(object sender, DragEventArgs e)
+        {
+            var data = e.Data;
+
+            // Handle FileDrop data.
+            if (data.GetDataPresent(DataFormats.FileDrop))
+            {
+                // Assign the file names to a string array, in 
+                // case the user has selected multiple files.
+                string[] files = (string[])e.Data.GetData(DataFormats.FileDrop);
+                try
+                {
+                    // Assign the first image to the picture variable.
+                    openedImage = System.Drawing.Image.FromFile(files[0]);
+                    // Set the picture location equal to the drop point.
+                    //this.pictureLocation = this.PointToClient(new Point(e.X, e.Y));
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show(ex.Message);
+                    return;
+                }
+            }
+
+            // Handle Bitmap data.
+            if (e.Data.GetDataPresent(DataFormats.Bitmap))
+            {
+                try
+                {
+                    // Create an Image and assign it to the picture variable.
+                    openedImage = (System.Drawing.Image)e.Data.GetData(DataFormats.Bitmap);
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show(ex.Message);
+                    return;
+                }
+                // Force the form to be redrawn with the image.
+
+                
+            }
+
+            if (tempImageStorage != null)
+            {
+                openedImage = tempImageStorage;
+                tempImageStorage = null;
+            }
+            disableTransparency();
+            this.Invalidate();
+
+
+        }
+        private string GetImagesInHTMLString(string htmlString)
+        {
+            try
+            {
+                List<string> images = new List<string>();
+                //string pattern = @"<(img)\b[^>]*>";
+
+
+                string pattern = Regex.Match(htmlString, "<img.+?src=[\"'](.+?)[\"'].*?>", RegexOptions.IgnoreCase).Groups[1].Value;
+
+                ///////////////////////
+                if (pattern.Contains("base64"))
+                {
+                    //pattern = pattern.Replace("data:image/jpeg;base64,", "");
+                    return pattern;
+                    byte[] bytes = Convert.FromBase64String(pattern);
+
+
+                    System.Drawing.Image image;
+                    using (MemoryStream ms = new MemoryStream(bytes))
+                    {
+                        image = System.Drawing.Image.FromStream(ms);
+                        //return pattern;
+                    }
+
+                }
+                else
+                {
+                    /////////////////////
+                    Regex rgx = new Regex(pattern, RegexOptions.IgnoreCase);
+                    MatchCollection matches = rgx.Matches(htmlString);
+
+                    for (int i = 0, l = matches.Count; i < l; i++)
+                    {
+                        images.Add(matches[i].Value);
+                    }
+                    return images[0];
+                }
+            }
+            catch
+            {
+                return null;
+            }
+        }
+
+        //chatGPT's function
+        public static List<KeyValuePair<string, string>> DecodeData(DataObject data)
+        {
+            var decodedData = new List<KeyValuePair<string, string>>();
+            foreach (var item in data.GetFormats())
+            {
+                object dataValue = data.GetData(item);
+                if (item == DataFormats.Text || item == DataFormats.Html)
+                {
+                    string text = dataValue.ToString();
+                    decodedData.Add(new KeyValuePair<string, string>(item, text));
+                }
+                else if (dataValue is MemoryStream memoryStream)
+                {
+                    memoryStream.Seek(0, SeekOrigin.Begin);
+                    using (var reader = new StreamReader(memoryStream))
+                    {
+                        string text = reader.ReadToEnd();
+                        decodedData.Add(new KeyValuePair<string, string>(item, text));
+                    }
+                }
+                else if (dataValue is DataObject nestedData)
+                {
+                    decodedData.AddRange(DecodeData(nestedData));
+                }
+            }
+            return decodedData;
+        }
+
+
+        private object queryAllAvailableData (DragEventArgs e, string[] FormatsPresent)
+        {
+
+            object[,] AllAvailableData = new object[20, 4];
+            for (int i = 0; i < FormatsPresent.Length; i++)
+            {
+                AllAvailableData[i, 0] = FormatsPresent[i];
+                AllAvailableData[i, 1] = e.Data.GetData(FormatsPresent[i]);
+                if (AllAvailableData[i, 1] != null)
+                {
+                    try
+                    {
+                        var image = System.Drawing.Image.FromStream((MemoryStream)AllAvailableData[i, 1]);
+                        if (image != null)
+                        {
+                            AllAvailableData[i, 2] = image;
+                        }
+                    }
+                    catch
+                    { }
+                    if ((string)AllAvailableData[i, 0] == "HTML Format")
+                    {
+                        string html = (string)AllAvailableData[i, 1];
+                        //if (!html.Contains("base64"))
+                        string imageURL = GetImagesInHTMLString(html);
+                        AllAvailableData[i, 3] = imageURL;
+                        //var imageNode = htmlDocument.DocumentNode.SelectSingleNode("//div[@class='bRMDJf islir']/img");
+                    }
+                    if (AllAvailableData[i, 1].GetType() == typeof(MemoryStream))
+                    {
+
+                        MemoryStream mem = (MemoryStream)AllAvailableData[i, 1];
+
+
+                        //var imageNode = htmlDocument.DocumentNode.SelectSingleNode("//div[@class='bRMDJf islir']/img");
+                    }
+                }
+            }
+            return AllAvailableData;
+        }
+        private System.Drawing.Image tempImageStorage;
+        private void RulerForm_DragEnter(object sender, DragEventArgs e)
+        {
+            
+            var FormatsPresent = e.Data.GetFormats();
+            object AllAvailableData = queryAllAvailableData(e, FormatsPresent);
+            var decodedData = DecodeData((DataObject)e.Data);
+                   
+
+
+            if (e.Data.GetDataPresent(DataFormats.Bitmap) ||
+      e.Data.GetDataPresent(DataFormats.FileDrop))
+            {
+                e.Effect = DragDropEffects.Copy;
+                return;
+            }
+
+            if (e.Data.GetDataPresent(DataFormats.Text))
+            {
+                string dataText = e.Data.GetData(DataFormats.Text).ToString();
+                //if (Uri.IsWellFormedUriString((string)e.Data.GetData(Text,UriKind.Absolute))
+                if (Uri.IsWellFormedUriString((string)e.Data.GetData(DataFormats.Text),UriKind.Absolute))
+                    {
+                    string URL = (string)e.Data.GetData(DataFormats.Text);
+                    var dataTest = e.Data.GetData(DataFormats.Text);
+                    try
+                    {
+
+                        using (WebClient webClient = new WebClient())
+                        {
+                            System.Net.ServicePointManager.SecurityProtocol = System.Net.SecurityProtocolType.Tls | System.Net.SecurityProtocolType.Tls11 | System.Net.SecurityProtocolType.Tls12;
+                            byte[] data = webClient.DownloadData(URL);
+
+                            using (MemoryStream mem = new MemoryStream(data))
+                            {
+                                tempImageStorage = null;
+                                try
+                                {
+                                    tempImageStorage = System.Drawing.Image.FromStream(mem);
+                                }
+                                catch
+                                {
+                                    //MessageBox.Show("Invalid image.");
+                                    //Console.Write("Invalid image.");
+                                }
+                                if (tempImageStorage != null)
+                                {
+                                    e.Effect = DragDropEffects.Copy;
+                                    return;
+                                }
+                            }
+
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show(ex.Message);
+                        return;
+                    }
+                }
+                
+
+
+            }
+            
+            if (e.Data.GetDataPresent(DataFormats.Html))
+            {
+
+                
+                    string html = (string)e.Data.GetData("HTML Format", false);
+                string imageURL = GetImagesInHTMLString(html);
+         
+
+                //var imageNode = htmlDocument.DocumentNode.SelectSingleNode("//div[@class='bRMDJf islir']/img");
+                if (imageURL.Contains("base64"))
+                {
+                    string encoded = imageURL.Replace("data:image/jpeg;base64,", "");
+                    
+                    byte[] bytes = Convert.FromBase64String(encoded);
+
+
+                    //System.Drawing.Image image;
+                    using (MemoryStream ms = new MemoryStream(bytes))
+                    {
+                        
+                        tempImageStorage = System.Drawing.Image.FromStream(ms);
+                        e.Effect = DragDropEffects.Copy;
+                        return;
+                    }
+                }
+                else
+                if (Uri.IsWellFormedUriString(imageURL, UriKind.Absolute))
+                {
+                    string URL = imageURL;
+                    //var dataTest = e.Data.GetData(DataFormats.Text);
+                    try
+                    {
+
+                        using (WebClient webClient = new WebClient())
+                        {
+                            webClient.Headers.Add("User-Agent", "Mozilla/5.0 (Windows NT 10.0;Win64) AppleWebkit/537.36 (KHTML, like Gecko) Chrome/89.0.4389.82 Safari/537.36");
+                            webClient.Headers.Add("Accept", "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8");
+                            webClient.Headers.Add("Accept-Encoding", "gzip, deflate, br");
+                            webClient.Headers.Add("Accept-Language", "en-US,en;q=0.5");
+                           // webClient.Headers.Add("Connection", "keep-alive");
+                            //webClient.Headers.Add("Host", "example.com");
+                            // many websites will block any requests without typical headers
+                            System.Net.ServicePointManager.SecurityProtocol = System.Net.SecurityProtocolType.Tls | System.Net.SecurityProtocolType.Tls11 | System.Net.SecurityProtocolType.Tls12;
+                            //ServicePointManager.ServerCertificateValidationCallback += (senderX, cert, chain, sslPolicyErrors) => true;
+
+                            byte[] data = webClient.DownloadData(URL);
+
+                            using (MemoryStream mem = new MemoryStream(data))
+                            {
+                                tempImageStorage = null;
+                                try
+                                {
+                                    tempImageStorage = System.Drawing.Image.FromStream(mem);
+                                }
+                                catch
+                                {
+                                    //MessageBox.Show("Invalid image.");
+                                    Console.Write("Invalid image.");
+                                }
+                                if (tempImageStorage != null)
+                                {
+                                    e.Effect = DragDropEffects.Copy;
+                                    return;
+                                }
+                            }
+
+                        }
+                    }
+                    catch
+                    {
+                        //MessageBox.Show(ex.Message);
+                        return;
+                    }
+                }
+
+
+            }
+            
+            else
+            {
+                e.Effect = DragDropEffects.None;
+                
+            }
+        }
     }
 
     // A class to represent the on-screen ruler
@@ -1027,7 +1404,8 @@ namespace OnScreenCalipers
         public double BPM { get; set; }
         public string CurrentUnit { get; set; }
         public string CurrentUnitAbbrev { get; set; }
-        public string LoadedPreset { get; set; }
+        public string LoadedPresetName { get; set; }
+        public Preset LoadedPreset { get; set; }
         public double PPMS { get; set; }        // pixels per millisecond
         public double PPMV { get; set; }        // pixels per mv
 
@@ -1050,7 +1428,7 @@ namespace OnScreenCalipers
             Start = new Point(0, 0);
             End = new Point(0, 0);
             DistancePixels = 0;
-            LoadedPreset = null;
+            LoadedPresetName = null;
             CurrentUnit = "milliseconds";
             CurrentUnitAbbrev = "ms";
             PPMS = 306.0 / 789.0;   // 306 pixels per 789 ms (Mayo 12-Lead)
@@ -1214,6 +1592,25 @@ namespace OnScreenCalipers
         }
     }
 
+    public class Border
+    {
+        public int Width { get; set; }
+        public Color Color { get; set; }
+        public bool Enabled { get; set; }
+
+        public Border(int width, Color color, bool enabled)
+        {
+            Width = width;
+            Color = color;
+            Enabled = enabled;
+        }
+
+        public bool EnableBorder(bool boolean)
+        {
+            Enabled = boolean;
+            return boolean;
+        }
+    }
     
 
     class Crosshair

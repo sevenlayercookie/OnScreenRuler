@@ -48,6 +48,7 @@ namespace OnScreenCalipers.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("Black")]
         public global::System.Drawing.Color LabelBackColor {
             get {
                 return ((global::System.Drawing.Color)(this["LabelBackColor"]));
@@ -59,6 +60,7 @@ namespace OnScreenCalipers.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("Lime")]
         public global::System.Drawing.Color LineColor {
             get {
                 return ((global::System.Drawing.Color)(this["LineColor"]));
@@ -70,7 +72,7 @@ namespace OnScreenCalipers.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("0")]
+        [global::System.Configuration.DefaultSettingValueAttribute("2")]
         public int LineWidth {
             get {
                 return ((int)(this["LineWidth"]));
@@ -94,6 +96,7 @@ namespace OnScreenCalipers.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("Orange")]
         public global::System.Drawing.Color LabelFontColor {
             get {
                 return ((global::System.Drawing.Color)(this["LabelFontColor"]));
@@ -111,6 +114,53 @@ namespace OnScreenCalipers.Properties {
             }
             set {
                 this["PresetsArray"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool BorderEnabled {
+            get {
+                return ((bool)(this["BorderEnabled"]));
+            }
+            set {
+                this["BorderEnabled"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("4")]
+        public int BorderWidth {
+            get {
+                return ((int)(this["BorderWidth"]));
+            }
+            set {
+                this["BorderWidth"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("Yellow")]
+        public global::System.Drawing.Color BorderColor {
+            get {
+                return ((global::System.Drawing.Color)(this["BorderColor"]));
+            }
+            set {
+                this["BorderColor"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        public global::OnScreenCalipers.Preset LastSelectedPreset {
+            get {
+                return ((global::OnScreenCalipers.Preset)(this["LastSelectedPreset"]));
+            }
+            set {
+                this["LastSelectedPreset"] = value;
             }
         }
     }

@@ -54,9 +54,10 @@
             this.openFileDialog1 = new System.Windows.Forms.OpenFileDialog();
             this.TransparencyCheckBox2 = new System.Windows.Forms.CheckBox();
             this.panel1 = new System.Windows.Forms.Panel();
-            this.checkBox1 = new System.Windows.Forms.CheckBox();
-            this.label1 = new System.Windows.Forms.Label();
             this.presetLabel = new System.Windows.Forms.Label();
+            this.label1 = new System.Windows.Forms.Label();
+            this.TopMostCheckBox = new System.Windows.Forms.CheckBox();
+            this.TopMostBox = new System.Windows.Forms.CheckBox();
             this.menuStrip1.SuspendLayout();
             this.panel1.SuspendLayout();
             this.SuspendLayout();
@@ -114,7 +115,7 @@
             this.helpToolStripMenuItem});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
-            this.menuStrip1.Size = new System.Drawing.Size(1201, 28);
+            this.menuStrip1.Size = new System.Drawing.Size(1209, 30);
             this.menuStrip1.TabIndex = 4;
             this.menuStrip1.Text = "menuStrip1";
             this.menuStrip1.MouseMove += new System.Windows.Forms.MouseEventHandler(this.menuStrip1_MouseMove);
@@ -127,7 +128,7 @@
             this.toolStripSeparator1,
             this.exitToolStripMenuItem});
             this.fileToolStripMenuItem.Name = "fileToolStripMenuItem";
-            this.fileToolStripMenuItem.Size = new System.Drawing.Size(46, 24);
+            this.fileToolStripMenuItem.Size = new System.Drawing.Size(46, 26);
             this.fileToolStripMenuItem.Text = "File";
             // 
             // openImageToolStripMenuItem
@@ -161,7 +162,7 @@
             this.editToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.screenshotToolStripMenuItem});
             this.editToolStripMenuItem.Name = "editToolStripMenuItem";
-            this.editToolStripMenuItem.Size = new System.Drawing.Size(49, 24);
+            this.editToolStripMenuItem.Size = new System.Drawing.Size(49, 26);
             this.editToolStripMenuItem.Text = "Edit";
             // 
             // screenshotToolStripMenuItem
@@ -177,7 +178,7 @@
             this.transparentModeToolStripMenuItem,
             this.caliperAppearanceToolStripMenuItem});
             this.viewToolStripMenuItem.Name = "viewToolStripMenuItem";
-            this.viewToolStripMenuItem.Size = new System.Drawing.Size(55, 24);
+            this.viewToolStripMenuItem.Size = new System.Drawing.Size(55, 26);
             this.viewToolStripMenuItem.Text = "View";
             // 
             // transparentModeToolStripMenuItem
@@ -202,13 +203,13 @@
             this.calculateToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.qTcToolStripMenuItem});
             this.calculateToolStripMenuItem.Name = "calculateToolStripMenuItem";
-            this.calculateToolStripMenuItem.Size = new System.Drawing.Size(84, 24);
+            this.calculateToolStripMenuItem.Size = new System.Drawing.Size(84, 26);
             this.calculateToolStripMenuItem.Text = "Calculate";
             // 
             // qTcToolStripMenuItem
             // 
             this.qTcToolStripMenuItem.Name = "qTcToolStripMenuItem";
-            this.qTcToolStripMenuItem.Size = new System.Drawing.Size(224, 26);
+            this.qTcToolStripMenuItem.Size = new System.Drawing.Size(116, 26);
             this.qTcToolStripMenuItem.Text = "QTc";
             this.qTcToolStripMenuItem.Click += new System.EventHandler(this.qTcToolStripMenuItem_Click);
             // 
@@ -218,20 +219,20 @@
             this.calibrateToolStripMenuItem1,
             this.presetsToolStripMenuItem});
             this.calibrateToolStripMenuItem.Name = "calibrateToolStripMenuItem";
-            this.calibrateToolStripMenuItem.Size = new System.Drawing.Size(83, 24);
+            this.calibrateToolStripMenuItem.Size = new System.Drawing.Size(83, 26);
             this.calibrateToolStripMenuItem.Text = "Calibrate";
             // 
             // calibrateToolStripMenuItem1
             // 
             this.calibrateToolStripMenuItem1.Name = "calibrateToolStripMenuItem1";
-            this.calibrateToolStripMenuItem1.Size = new System.Drawing.Size(224, 26);
+            this.calibrateToolStripMenuItem1.Size = new System.Drawing.Size(152, 26);
             this.calibrateToolStripMenuItem1.Text = "Calibrate";
             this.calibrateToolStripMenuItem1.Click += new System.EventHandler(this.CalibrateBtn_Click);
             // 
             // presetsToolStripMenuItem
             // 
             this.presetsToolStripMenuItem.Name = "presetsToolStripMenuItem";
-            this.presetsToolStripMenuItem.Size = new System.Drawing.Size(224, 26);
+            this.presetsToolStripMenuItem.Size = new System.Drawing.Size(152, 26);
             this.presetsToolStripMenuItem.Text = "Presets...";
             this.presetsToolStripMenuItem.Click += new System.EventHandler(this.presetsToolStripMenuItem_Click);
             // 
@@ -241,7 +242,7 @@
             this.aboutToolStripMenuItem,
             this.helpToolStripMenuItem1});
             this.helpToolStripMenuItem.Name = "helpToolStripMenuItem";
-            this.helpToolStripMenuItem.Size = new System.Drawing.Size(55, 24);
+            this.helpToolStripMenuItem.Size = new System.Drawing.Size(55, 26);
             this.helpToolStripMenuItem.Text = "Help";
             // 
             // aboutToolStripMenuItem
@@ -256,6 +257,7 @@
             this.helpToolStripMenuItem1.Name = "helpToolStripMenuItem1";
             this.helpToolStripMenuItem1.Size = new System.Drawing.Size(133, 26);
             this.helpToolStripMenuItem1.Text = "Help";
+            this.helpToolStripMenuItem1.Click += new System.EventHandler(this.helpToolStripMenuItem1_Click);
             // 
             // openFileDialog1
             // 
@@ -279,12 +281,11 @@
             // 
             // panel1
             // 
-            this.panel1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.panel1.BackColor = System.Drawing.SystemColors.ControlLight;
             this.panel1.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.panel1.Controls.Add(this.presetLabel);
             this.panel1.Controls.Add(this.label1);
-            this.panel1.Controls.Add(this.checkBox1);
+            this.panel1.Controls.Add(this.TopMostCheckBox);
             this.panel1.Controls.Add(this.CalibrateBtn);
             this.panel1.Controls.Add(this.TransparencyCheckBox2);
             this.panel1.Controls.Add(this.UnitsBox);
@@ -295,18 +296,14 @@
             this.panel1.Size = new System.Drawing.Size(366, 240);
             this.panel1.TabIndex = 6;
             // 
-            // checkBox1
+            // presetLabel
             // 
-            this.checkBox1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.checkBox1.AutoSize = true;
-            this.checkBox1.BackColor = System.Drawing.SystemColors.ControlLight;
-            this.checkBox1.Location = new System.Drawing.Point(118, 188);
-            this.checkBox1.Name = "checkBox1";
-            this.checkBox1.Size = new System.Drawing.Size(205, 35);
-            this.checkBox1.TabIndex = 6;
-            this.checkBox1.Text = "Always on top";
-            this.checkBox1.UseVisualStyleBackColor = false;
-            this.checkBox1.CheckedChanged += new System.EventHandler(this.checkBox1_CheckedChanged);
+            this.presetLabel.AutoSize = true;
+            this.presetLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.presetLabel.Location = new System.Drawing.Point(120, 117);
+            this.presetLabel.Name = "presetLabel";
+            this.presetLabel.Size = new System.Drawing.Size(0, 25);
+            this.presetLabel.TabIndex = 8;
             // 
             // label1
             // 
@@ -318,24 +315,42 @@
             this.label1.TabIndex = 7;
             this.label1.Text = "Preset:";
             // 
-            // presetLabel
+            // TopMostCheckBox
             // 
-            this.presetLabel.AutoSize = true;
-            this.presetLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.presetLabel.Location = new System.Drawing.Point(120, 117);
-            this.presetLabel.Name = "presetLabel";
-            this.presetLabel.Size = new System.Drawing.Size(0, 25);
-            this.presetLabel.TabIndex = 8;
+            this.TopMostCheckBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.TopMostCheckBox.AutoSize = true;
+            this.TopMostCheckBox.BackColor = System.Drawing.SystemColors.ControlLight;
+            this.TopMostCheckBox.Location = new System.Drawing.Point(118, 188);
+            this.TopMostCheckBox.Name = "TopMostCheckBox";
+            this.TopMostCheckBox.Size = new System.Drawing.Size(205, 35);
+            this.TopMostCheckBox.TabIndex = 6;
+            this.TopMostCheckBox.Text = "Always on top";
+            this.TopMostCheckBox.UseVisualStyleBackColor = false;
+            this.TopMostCheckBox.CheckedChanged += new System.EventHandler(this.checkBox1_CheckedChanged);
+            // 
+            // TopMostBox
+            // 
+            this.TopMostBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.TopMostBox.AutoSize = true;
+            this.TopMostBox.BackColor = System.Drawing.SystemColors.ControlLight;
+            this.TopMostBox.Location = new System.Drawing.Point(118, 188);
+            this.TopMostBox.Name = "TopMostBox";
+            this.TopMostBox.Size = new System.Drawing.Size(205, 35);
+            this.TopMostBox.TabIndex = 6;
+            this.TopMostBox.Text = "Always on top";
+            this.TopMostBox.UseVisualStyleBackColor = false;
+            this.TopMostBox.CheckedChanged += new System.EventHandler(this.checkBox1_CheckedChanged);
             // 
             // RulerForm
             // 
+            this.AllowDrop = true;
             this.AutoScaleDimensions = new System.Drawing.SizeF(16F, 31F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.AutoScroll = true;
-            this.ClientSize = new System.Drawing.Size(1201, 416);
+            this.ClientSize = new System.Drawing.Size(1209, 416);
             this.Controls.Add(this.panel1);
             this.Controls.Add(this.menuStrip1);
             this.Cursor = System.Windows.Forms.Cursors.Cross;
+            this.DoubleBuffered = true;
             this.Font = new System.Drawing.Font("Microsoft Sans Serif", 16F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.KeyPreview = true;
@@ -346,6 +361,8 @@
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.RulerForm_FormClosing);
             this.Load += new System.EventHandler(this.RulerForm_Load);
             this.DpiChanged += new System.Windows.Forms.DpiChangedEventHandler(this.RulerForm_DpiChanged);
+            this.DragDrop += new System.Windows.Forms.DragEventHandler(this.RulerForm_DragDrop);
+            this.DragEnter += new System.Windows.Forms.DragEventHandler(this.RulerForm_DragEnter);
             this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.RulerForm_KeyDown);
             this.Resize += new System.EventHandler(this.RulerForm_Resize);
             this.menuStrip1.ResumeLayout(false);
@@ -384,9 +401,10 @@
         private System.Windows.Forms.ToolStripMenuItem qTcToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem presetsToolStripMenuItem;
         private System.Windows.Forms.Panel panel1;
-        private System.Windows.Forms.CheckBox checkBox1;
         private System.Windows.Forms.Label presetLabel;
         private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.CheckBox TopMostBox;
+        public System.Windows.Forms.CheckBox TopMostCheckBox;
     }
 }
 

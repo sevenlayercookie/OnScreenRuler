@@ -9,21 +9,33 @@
       <Value Profile="(Default)" />
     </Setting>
     <Setting Name="LabelBackColor" Type="System.Drawing.Color" Scope="User">
-      <Value Profile="(Default)" />
+      <Value Profile="(Default)">Black</Value>
     </Setting>
     <Setting Name="LineColor" Type="System.Drawing.Color" Scope="User">
-      <Value Profile="(Default)" />
+      <Value Profile="(Default)">Lime</Value>
     </Setting>
     <Setting Name="LineWidth" Type="System.Int32" Scope="User">
-      <Value Profile="(Default)">0</Value>
+      <Value Profile="(Default)">2</Value>
     </Setting>
     <Setting Name="TicksEnabled" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">False</Value>
     </Setting>
     <Setting Name="LabelFontColor" Type="System.Drawing.Color" Scope="User">
-      <Value Profile="(Default)" />
+      <Value Profile="(Default)">Orange</Value>
     </Setting>
     <Setting Name="PresetsArray" Type="OnScreenCalipers.Preset[]" Scope="User">
+      <Value Profile="(Default)" />
+    </Setting>
+    <Setting Name="BorderEnabled" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">False</Value>
+    </Setting>
+    <Setting Name="BorderWidth" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">4</Value>
+    </Setting>
+    <Setting Name="BorderColor" Type="System.Drawing.Color" Scope="User">
+      <Value Profile="(Default)">Yellow</Value>
+    </Setting>
+    <Setting Name="LastSelectedPreset" Type="OnScreenCalipers.Preset" Scope="User">
       <Value Profile="(Default)" />
     </Setting>
   </Settings>

@@ -24,7 +24,8 @@ namespace OnScreenCalipers
     {
         public double PPMS { get; set; }
         public double PPMV { get; set; }
-        public string LoadedPreset { get; set; }
+        public string LoadedPresetName { get; set; }
+        public Preset LoadedPreset { get; set; }
         
 
         public CalPresets(RulerForm rulerForm)
@@ -69,7 +70,8 @@ namespace OnScreenCalipers
             if (presetList.SelectedItems.Count == 1)
             {
                 LoadedPresetBox.Text = PresetArray[presetList.SelectedIndex].Name;
-                LoadedPreset = PresetArray[presetList.SelectedIndex].Name;
+                LoadedPreset = PresetArray[presetList.SelectedIndex];
+                LoadedPresetName = PresetArray[presetList.SelectedIndex].Name;
                 PresetPPMS = PresetArray[presetList.SelectedIndex].PPMS;
                 PresetPPMV = PresetArray[presetList.SelectedIndex].PPMV;
                 RulerForm rulerForm = (RulerForm)this.Owner;
@@ -92,8 +94,10 @@ namespace OnScreenCalipers
             this.TopMost= true;
             //if (CheckPresetMatches())
             if (LoadedPreset != null)
+            { }
+            if (LoadedPresetName != null)
             {
-                LoadedPresetBox.Text = LoadedPreset;
+                LoadedPresetBox.Text = LoadedPresetName;
             }
             PPMSBox.Text = PPMS.ToString("N3");
             PPMVBox.Text = PPMV.ToString("N3");
@@ -299,7 +303,10 @@ namespace OnScreenCalipers
             }
         }
 
-   
+        private void OKBtn_Click(object sender, EventArgs e)
+        {
+            this.Close();
+        }
     }
 
     [Serializable]
@@ -309,6 +316,7 @@ namespace OnScreenCalipers
         public double PPMS;
         public double PPMV;
         public bool ReadOnly;
+
 
         public Preset(string name, double ppms, double ppmv, bool readOnly = false)
         {
@@ -350,7 +358,10 @@ namespace OnScreenCalipers
             {
 
                 if ((int)value < 1 || (int)value > 100)
-                {
+                if ((int)value < 1 || (int)value > 100)
+                if ((int)value < 1 || (int)value > 100)
+                if ((int)value < 1 || (int)value > 100)
+                            {
                     return false;
                 }
             }

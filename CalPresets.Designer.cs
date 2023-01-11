@@ -41,6 +41,7 @@
             this.label1 = new System.Windows.Forms.Label();
             this.DeletePresetBtn = new System.Windows.Forms.Button();
             this.restoreDefaultsBtn = new System.Windows.Forms.Button();
+            this.OKBtn = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // presetList
@@ -129,17 +130,17 @@
             // 
             // LoadedPresetBox
             // 
-            this.LoadedPresetBox.Location = new System.Drawing.Point(299, 371);
+            this.LoadedPresetBox.Location = new System.Drawing.Point(334, 170);
             this.LoadedPresetBox.Name = "LoadedPresetBox";
             this.LoadedPresetBox.ReadOnly = true;
-            this.LoadedPresetBox.Size = new System.Drawing.Size(202, 22);
+            this.LoadedPresetBox.Size = new System.Drawing.Size(190, 22);
             this.LoadedPresetBox.TabIndex = 12;
             this.LoadedPresetBox.TabStop = false;
             // 
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(194, 374);
+            this.label1.Location = new System.Drawing.Point(229, 173);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(99, 16);
             this.label1.TabIndex = 11;
@@ -167,11 +168,23 @@
             this.restoreDefaultsBtn.UseVisualStyleBackColor = true;
             this.restoreDefaultsBtn.Click += new System.EventHandler(this.restoreDefaultsBtn_Click);
             // 
+            // OKBtn
+            // 
+            this.OKBtn.AutoSize = true;
+            this.OKBtn.Location = new System.Drawing.Point(429, 341);
+            this.OKBtn.Name = "OKBtn";
+            this.OKBtn.Size = new System.Drawing.Size(95, 34);
+            this.OKBtn.TabIndex = 13;
+            this.OKBtn.Text = "OK";
+            this.OKBtn.UseVisualStyleBackColor = true;
+            this.OKBtn.Click += new System.EventHandler(this.OKBtn_Click);
+            // 
             // CalPresets
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(542, 408);
+            this.ClientSize = new System.Drawing.Size(542, 389);
+            this.Controls.Add(this.OKBtn);
             this.Controls.Add(this.restoreDefaultsBtn);
             this.Controls.Add(this.DeletePresetBtn);
             this.Controls.Add(this.LoadedPresetBox);
@@ -208,5 +221,6 @@
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Button DeletePresetBtn;
         private System.Windows.Forms.Button restoreDefaultsBtn;
+        private System.Windows.Forms.Button OKBtn;
     }
 }

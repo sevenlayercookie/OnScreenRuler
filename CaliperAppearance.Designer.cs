@@ -47,12 +47,23 @@
             this.LabelBackColorDialog = new System.Windows.Forms.ColorDialog();
             this.groupBox3 = new System.Windows.Forms.GroupBox();
             this.TopmostBox = new System.Windows.Forms.CheckBox();
+            this.groupBox4 = new System.Windows.Forms.GroupBox();
+            this.BorderColorBox = new System.Windows.Forms.PictureBox();
+            this.BorderColorBtn = new System.Windows.Forms.Button();
+            this.BorderCheckBox = new System.Windows.Forms.CheckBox();
+            this.label3 = new System.Windows.Forms.Label();
+            this.label4 = new System.Windows.Forms.Label();
+            this.BorderWidthBox = new System.Windows.Forms.NumericUpDown();
+            this.BorderColorDialog = new System.Windows.Forms.ColorDialog();
             ((System.ComponentModel.ISupportInitialize)(this.caliperLineWidth)).BeginInit();
             this.groupBox1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.LabelBackColorBox)).BeginInit();
             this.groupBox2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.LineColorBox)).BeginInit();
             this.groupBox3.SuspendLayout();
+            this.groupBox4.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.BorderColorBox)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.BorderWidthBox)).BeginInit();
             this.SuspendLayout();
             // 
             // LineColorDialog
@@ -102,6 +113,7 @@
             0,
             0,
             0});
+            this.caliperLineWidth.ValueChanged += new System.EventHandler(this.caliperLineWidth_ValueChanged);
             // 
             // label2
             // 
@@ -245,11 +257,100 @@
             this.TopmostBox.UseVisualStyleBackColor = true;
             this.TopmostBox.CheckedChanged += new System.EventHandler(this.TopmostBox_CheckedChanged);
             // 
+            // groupBox4
+            // 
+            this.groupBox4.Controls.Add(this.BorderColorBox);
+            this.groupBox4.Controls.Add(this.BorderColorBtn);
+            this.groupBox4.Controls.Add(this.BorderCheckBox);
+            this.groupBox4.Controls.Add(this.label3);
+            this.groupBox4.Controls.Add(this.label4);
+            this.groupBox4.Controls.Add(this.BorderWidthBox);
+            this.groupBox4.Location = new System.Drawing.Point(313, 144);
+            this.groupBox4.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.groupBox4.Name = "groupBox4";
+            this.groupBox4.Padding = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.groupBox4.Size = new System.Drawing.Size(255, 135);
+            this.groupBox4.TabIndex = 11;
+            this.groupBox4.TabStop = false;
+            this.groupBox4.Text = "Window Border";
+            // 
+            // BorderColorBox
+            // 
+            this.BorderColorBox.BackColor = System.Drawing.Color.Yellow;
+            this.BorderColorBox.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.BorderColorBox.Location = new System.Drawing.Point(198, 30);
+            this.BorderColorBox.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.BorderColorBox.Name = "BorderColorBox";
+            this.BorderColorBox.Size = new System.Drawing.Size(20, 20);
+            this.BorderColorBox.TabIndex = 10;
+            this.BorderColorBox.TabStop = false;
+            this.BorderColorBox.Click += new System.EventHandler(this.BorderColorBtn_Click);
+            // 
+            // BorderColorBtn
+            // 
+            this.BorderColorBtn.Location = new System.Drawing.Point(43, 21);
+            this.BorderColorBtn.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.BorderColorBtn.Name = "BorderColorBtn";
+            this.BorderColorBtn.Size = new System.Drawing.Size(149, 38);
+            this.BorderColorBtn.TabIndex = 1;
+            this.BorderColorBtn.Text = "Line Color";
+            this.BorderColorBtn.UseVisualStyleBackColor = true;
+            this.BorderColorBtn.Click += new System.EventHandler(this.BorderColorBtn_Click);
+            // 
+            // BorderCheckBox
+            // 
+            this.BorderCheckBox.AutoSize = true;
+            this.BorderCheckBox.Location = new System.Drawing.Point(43, 103);
+            this.BorderCheckBox.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.BorderCheckBox.Name = "BorderCheckBox";
+            this.BorderCheckBox.Size = new System.Drawing.Size(175, 20);
+            this.BorderCheckBox.TabIndex = 5;
+            this.BorderCheckBox.Text = "Window Border Enabled";
+            this.BorderCheckBox.UseVisualStyleBackColor = true;
+            this.BorderCheckBox.CheckedChanged += new System.EventHandler(this.BorderCheckBox_CheckedChanged);
+            // 
+            // label3
+            // 
+            this.label3.AutoSize = true;
+            this.label3.Location = new System.Drawing.Point(57, 73);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(88, 16);
+            this.label3.TabIndex = 2;
+            this.label3.Text = "Border Width:";
+            // 
+            // label4
+            // 
+            this.label4.AutoSize = true;
+            this.label4.Location = new System.Drawing.Point(209, 73);
+            this.label4.Name = "label4";
+            this.label4.Size = new System.Drawing.Size(21, 16);
+            this.label4.TabIndex = 4;
+            this.label4.Text = "px";
+            // 
+            // BorderWidthBox
+            // 
+            this.BorderWidthBox.Location = new System.Drawing.Point(151, 68);
+            this.BorderWidthBox.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.BorderWidthBox.Name = "BorderWidthBox";
+            this.BorderWidthBox.Size = new System.Drawing.Size(52, 22);
+            this.BorderWidthBox.TabIndex = 3;
+            this.BorderWidthBox.Value = new decimal(new int[] {
+            4,
+            0,
+            0,
+            0});
+            this.BorderWidthBox.ValueChanged += new System.EventHandler(this.BorderWidthBox_ValueChanged);
+            // 
+            // BorderColorDialog
+            // 
+            this.BorderColorDialog.Color = System.Drawing.Color.Lime;
+            // 
             // CaliperAppearance
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(681, 367);
+            this.ClientSize = new System.Drawing.Size(586, 367);
+            this.Controls.Add(this.groupBox4);
             this.Controls.Add(this.groupBox3);
             this.Controls.Add(this.groupBox2);
             this.Controls.Add(this.groupBox1);
@@ -273,6 +374,10 @@
             ((System.ComponentModel.ISupportInitialize)(this.LineColorBox)).EndInit();
             this.groupBox3.ResumeLayout(false);
             this.groupBox3.PerformLayout();
+            this.groupBox4.ResumeLayout(false);
+            this.groupBox4.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.BorderColorBox)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.BorderWidthBox)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -297,5 +402,13 @@
         private System.Windows.Forms.PictureBox LineColorBox;
         private System.Windows.Forms.GroupBox groupBox3;
         private System.Windows.Forms.CheckBox TopmostBox;
+        private System.Windows.Forms.GroupBox groupBox4;
+        private System.Windows.Forms.PictureBox BorderColorBox;
+        private System.Windows.Forms.Button BorderColorBtn;
+        private System.Windows.Forms.CheckBox BorderCheckBox;
+        private System.Windows.Forms.Label label3;
+        private System.Windows.Forms.Label label4;
+        private System.Windows.Forms.NumericUpDown BorderWidthBox;
+        private System.Windows.Forms.ColorDialog BorderColorDialog;
     }
 }
