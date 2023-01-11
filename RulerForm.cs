@@ -113,6 +113,7 @@ namespace OnScreenCalipers
             {
                 DrawBorder(e);
             }
+
             // Calculate the length and angle of the ruler
             int dx = ruler.End.X - ruler.Start.X;
             //int dy = ruler.End.Y - ruler.Start.Y;
@@ -219,7 +220,7 @@ namespace OnScreenCalipers
             return 0;
         }
 
-      
+
 
 
         protected override void OnMouseDown(MouseEventArgs e)
@@ -329,7 +330,8 @@ namespace OnScreenCalipers
                     {
                         this.Cursor = Cursors.SizeWE;
                     }
-                    else {
+                    else
+                    {
                         this.Cursor = Cursors.Hand;
                     }
 
@@ -546,11 +548,11 @@ namespace OnScreenCalipers
 
         private void RulerForm_Load(object sender, EventArgs e)
         {
-
+            //this.Font = new Font(this.Font.FontFamily, this.Font.Size * 2,this.Font.Style);
             Settings.Default.SettingChanging += new SettingChangingEventHandler(SettingChanging);
             LoadSettings();
             SetProcessDPIAware();
-            
+
             SetSelectedOption(UnitsBox, ruler);
             DoubleBuffered = true;
             AnchorPanel();
@@ -733,10 +735,12 @@ namespace OnScreenCalipers
         public bool enableTopMost(bool boolean)
         {
             return this.TopMost = TopMostCheckBox.Checked = boolean; // return the input (true or false)
+            /*
             if (CaliperAppearanceForm != null)
             {
                 CaliperAppearanceForm.DialogTopmost = boolean;
             }
+            */
         }
 
 
@@ -781,7 +785,7 @@ namespace OnScreenCalipers
 
             // last preset
             ruler.LoadedPresetName = Settings.Default.LastPresetName;
-            
+
 
             bool IsValid = validator.IsValid(Settings.Default);
             if (Settings.Default.LabelFont == null || IsValid == false) // if first run or invalid settings, restoredefaults
@@ -1120,7 +1124,7 @@ namespace OnScreenCalipers
                 }
                 // Force the form to be redrawn with the image.
 
-                
+
             }
 
             if (tempImageStorage != null)
@@ -1148,6 +1152,7 @@ namespace OnScreenCalipers
                 {
                     //pattern = pattern.Replace("data:image/jpeg;base64,", "");
                     return pattern;
+                    /*
                     byte[] bytes = Convert.FromBase64String(pattern);
 
 
@@ -1157,6 +1162,7 @@ namespace OnScreenCalipers
                         image = System.Drawing.Image.FromStream(ms);
                         //return pattern;
                     }
+                    */
 
                 }
                 else
@@ -1208,7 +1214,7 @@ namespace OnScreenCalipers
         }
 
 
-        private object queryAllAvailableData (DragEventArgs e, string[] FormatsPresent)
+        private object queryAllAvailableData(DragEventArgs e, string[] FormatsPresent)
         {
 
             object[,] AllAvailableData = new object[20, 4];
@@ -1251,11 +1257,11 @@ namespace OnScreenCalipers
         private System.Drawing.Image tempImageStorage;
         private void RulerForm_DragEnter(object sender, DragEventArgs e)
         {
-            
+
             var FormatsPresent = e.Data.GetFormats();
             object AllAvailableData = queryAllAvailableData(e, FormatsPresent);
             var decodedData = DecodeData((DataObject)e.Data);
-                   
+
 
 
             if (e.Data.GetDataPresent(DataFormats.Bitmap) ||
@@ -1269,8 +1275,8 @@ namespace OnScreenCalipers
             {
                 string dataText = e.Data.GetData(DataFormats.Text).ToString();
                 //if (Uri.IsWellFormedUriString((string)e.Data.GetData(Text,UriKind.Absolute))
-                if (Uri.IsWellFormedUriString((string)e.Data.GetData(DataFormats.Text),UriKind.Absolute))
-                    {
+                if (Uri.IsWellFormedUriString((string)e.Data.GetData(DataFormats.Text), UriKind.Absolute))
+                {
                     string URL = (string)e.Data.GetData(DataFormats.Text);
                     var dataTest = e.Data.GetData(DataFormats.Text);
                     try
@@ -1308,31 +1314,31 @@ namespace OnScreenCalipers
                         return;
                     }
                 }
-                
+
 
 
             }
-            
+
             if (e.Data.GetDataPresent(DataFormats.Html))
             {
 
-                
-                    string html = (string)e.Data.GetData("HTML Format", false);
+
+                string html = (string)e.Data.GetData("HTML Format", false);
                 string imageURL = GetImagesInHTMLString(html);
-         
+
 
                 //var imageNode = htmlDocument.DocumentNode.SelectSingleNode("//div[@class='bRMDJf islir']/img");
                 if (imageURL.Contains("base64"))
                 {
                     string encoded = imageURL.Replace("data:image/jpeg;base64,", "");
-                    
+
                     byte[] bytes = Convert.FromBase64String(encoded);
 
 
                     //System.Drawing.Image image;
                     using (MemoryStream ms = new MemoryStream(bytes))
                     {
-                        
+
                         tempImageStorage = System.Drawing.Image.FromStream(ms);
                         e.Effect = DragDropEffects.Copy;
                         return;
@@ -1352,7 +1358,7 @@ namespace OnScreenCalipers
                             webClient.Headers.Add("Accept", "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8");
                             webClient.Headers.Add("Accept-Encoding", "gzip, deflate, br");
                             webClient.Headers.Add("Accept-Language", "en-US,en;q=0.5");
-                           // webClient.Headers.Add("Connection", "keep-alive");
+                            // webClient.Headers.Add("Connection", "keep-alive");
                             //webClient.Headers.Add("Host", "example.com");
                             // many websites will block any requests without typical headers
                             System.Net.ServicePointManager.SecurityProtocol = System.Net.SecurityProtocolType.Tls | System.Net.SecurityProtocolType.Tls11 | System.Net.SecurityProtocolType.Tls12;
@@ -1390,12 +1396,17 @@ namespace OnScreenCalipers
 
 
             }
-            
+
             else
             {
                 e.Effect = DragDropEffects.None;
-                
+
             }
+        }
+
+        private void sgarbossaToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+
         }
     }
 
@@ -1618,7 +1629,7 @@ namespace OnScreenCalipers
             return boolean;
         }
     }
-    
+
 
     class Crosshair
     {
@@ -1631,11 +1642,11 @@ namespace OnScreenCalipers
             Location = new Point(0, 0);
             Opacity = 0.9;
             LinePen = Pens.Gray;
-            
+
         }
 
 
-        
+
         public float Draw(Point location, PaintEventArgs e, int width, int height)
         {
             // Draw the crosshair
@@ -1644,9 +1655,7 @@ namespace OnScreenCalipers
             return 0;
         }
 
-        
+
 
     }
-
-
 }
