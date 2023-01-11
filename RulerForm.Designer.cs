@@ -71,9 +71,10 @@
             "milliseconds",
             "seconds",
             "bpm"});
-            this.UnitsBox.Location = new System.Drawing.Point(120, 16);
+            this.UnitsBox.Location = new System.Drawing.Point(60, 8);
+            this.UnitsBox.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.UnitsBox.Name = "UnitsBox";
-            this.UnitsBox.Size = new System.Drawing.Size(203, 39);
+            this.UnitsBox.Size = new System.Drawing.Size(104, 24);
             this.UnitsBox.TabIndex = 0;
             this.UnitsBox.SelectedIndexChanged += new System.EventHandler(this.UnitsBox_SelectedIndexChanged);
             // 
@@ -81,9 +82,10 @@
             // 
             this.CalibrateTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.CalibrateTextBox.BackColor = System.Drawing.Color.White;
-            this.CalibrateTextBox.Location = new System.Drawing.Point(30, 16);
+            this.CalibrateTextBox.Location = new System.Drawing.Point(15, 8);
+            this.CalibrateTextBox.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.CalibrateTextBox.Name = "CalibrateTextBox";
-            this.CalibrateTextBox.Size = new System.Drawing.Size(84, 38);
+            this.CalibrateTextBox.Size = new System.Drawing.Size(44, 22);
             this.CalibrateTextBox.TabIndex = 1;
             this.CalibrateTextBox.Text = "1000";
             this.CalibrateTextBox.TextChanged += new System.EventHandler(this.CalibrateTextBox_change);
@@ -95,9 +97,10 @@
             this.CalibrateBtn.AutoSize = true;
             this.CalibrateBtn.BackColor = System.Drawing.Color.White;
             this.CalibrateBtn.Cursor = System.Windows.Forms.Cursors.Default;
-            this.CalibrateBtn.Location = new System.Drawing.Point(120, 62);
+            this.CalibrateBtn.Location = new System.Drawing.Point(60, 32);
+            this.CalibrateBtn.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.CalibrateBtn.Name = "CalibrateBtn";
-            this.CalibrateBtn.Size = new System.Drawing.Size(203, 41);
+            this.CalibrateBtn.Size = new System.Drawing.Size(102, 26);
             this.CalibrateBtn.TabIndex = 2;
             this.CalibrateBtn.Text = "Calibrate";
             this.CalibrateBtn.UseVisualStyleBackColor = false;
@@ -115,7 +118,8 @@
             this.helpToolStripMenuItem});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
-            this.menuStrip1.Size = new System.Drawing.Size(1209, 30);
+            this.menuStrip1.Padding = new System.Windows.Forms.Padding(4, 1, 0, 1);
+            this.menuStrip1.Size = new System.Drawing.Size(629, 26);
             this.menuStrip1.TabIndex = 4;
             this.menuStrip1.Text = "menuStrip1";
             this.menuStrip1.MouseMove += new System.Windows.Forms.MouseEventHandler(this.menuStrip1_MouseMove);
@@ -128,32 +132,32 @@
             this.toolStripSeparator1,
             this.exitToolStripMenuItem});
             this.fileToolStripMenuItem.Name = "fileToolStripMenuItem";
-            this.fileToolStripMenuItem.Size = new System.Drawing.Size(46, 26);
+            this.fileToolStripMenuItem.Size = new System.Drawing.Size(46, 24);
             this.fileToolStripMenuItem.Text = "File";
             // 
             // openImageToolStripMenuItem
             // 
             this.openImageToolStripMenuItem.Name = "openImageToolStripMenuItem";
-            this.openImageToolStripMenuItem.Size = new System.Drawing.Size(174, 26);
+            this.openImageToolStripMenuItem.Size = new System.Drawing.Size(224, 26);
             this.openImageToolStripMenuItem.Text = "Open Image";
             this.openImageToolStripMenuItem.Click += new System.EventHandler(this.openImageToolStripMenuItem_Click);
             // 
             // closeImageToolStripMenuItem
             // 
             this.closeImageToolStripMenuItem.Name = "closeImageToolStripMenuItem";
-            this.closeImageToolStripMenuItem.Size = new System.Drawing.Size(174, 26);
+            this.closeImageToolStripMenuItem.Size = new System.Drawing.Size(224, 26);
             this.closeImageToolStripMenuItem.Text = "Close Image";
             this.closeImageToolStripMenuItem.Click += new System.EventHandler(this.closeImageToolStripMenuItem_Click);
             // 
             // toolStripSeparator1
             // 
             this.toolStripSeparator1.Name = "toolStripSeparator1";
-            this.toolStripSeparator1.Size = new System.Drawing.Size(171, 6);
+            this.toolStripSeparator1.Size = new System.Drawing.Size(221, 6);
             // 
             // exitToolStripMenuItem
             // 
             this.exitToolStripMenuItem.Name = "exitToolStripMenuItem";
-            this.exitToolStripMenuItem.Size = new System.Drawing.Size(174, 26);
+            this.exitToolStripMenuItem.Size = new System.Drawing.Size(224, 26);
             this.exitToolStripMenuItem.Text = "Exit";
             this.exitToolStripMenuItem.Click += new System.EventHandler(this.exitToolStripMenuItem_Click);
             // 
@@ -162,7 +166,7 @@
             this.editToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.screenshotToolStripMenuItem});
             this.editToolStripMenuItem.Name = "editToolStripMenuItem";
-            this.editToolStripMenuItem.Size = new System.Drawing.Size(49, 26);
+            this.editToolStripMenuItem.Size = new System.Drawing.Size(49, 24);
             this.editToolStripMenuItem.Text = "Edit";
             // 
             // screenshotToolStripMenuItem
@@ -178,7 +182,7 @@
             this.transparentModeToolStripMenuItem,
             this.caliperAppearanceToolStripMenuItem});
             this.viewToolStripMenuItem.Name = "viewToolStripMenuItem";
-            this.viewToolStripMenuItem.Size = new System.Drawing.Size(55, 26);
+            this.viewToolStripMenuItem.Size = new System.Drawing.Size(55, 24);
             this.viewToolStripMenuItem.Text = "View";
             // 
             // transparentModeToolStripMenuItem
@@ -203,13 +207,13 @@
             this.calculateToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.qTcToolStripMenuItem});
             this.calculateToolStripMenuItem.Name = "calculateToolStripMenuItem";
-            this.calculateToolStripMenuItem.Size = new System.Drawing.Size(84, 26);
+            this.calculateToolStripMenuItem.Size = new System.Drawing.Size(84, 24);
             this.calculateToolStripMenuItem.Text = "Calculate";
             // 
             // qTcToolStripMenuItem
             // 
             this.qTcToolStripMenuItem.Name = "qTcToolStripMenuItem";
-            this.qTcToolStripMenuItem.Size = new System.Drawing.Size(116, 26);
+            this.qTcToolStripMenuItem.Size = new System.Drawing.Size(224, 26);
             this.qTcToolStripMenuItem.Text = "QTc";
             this.qTcToolStripMenuItem.Click += new System.EventHandler(this.qTcToolStripMenuItem_Click);
             // 
@@ -219,7 +223,7 @@
             this.calibrateToolStripMenuItem1,
             this.presetsToolStripMenuItem});
             this.calibrateToolStripMenuItem.Name = "calibrateToolStripMenuItem";
-            this.calibrateToolStripMenuItem.Size = new System.Drawing.Size(83, 26);
+            this.calibrateToolStripMenuItem.Size = new System.Drawing.Size(83, 24);
             this.calibrateToolStripMenuItem.Text = "Calibrate";
             // 
             // calibrateToolStripMenuItem1
@@ -242,20 +246,20 @@
             this.aboutToolStripMenuItem,
             this.helpToolStripMenuItem1});
             this.helpToolStripMenuItem.Name = "helpToolStripMenuItem";
-            this.helpToolStripMenuItem.Size = new System.Drawing.Size(55, 26);
+            this.helpToolStripMenuItem.Size = new System.Drawing.Size(55, 24);
             this.helpToolStripMenuItem.Text = "Help";
             // 
             // aboutToolStripMenuItem
             // 
             this.aboutToolStripMenuItem.Name = "aboutToolStripMenuItem";
-            this.aboutToolStripMenuItem.Size = new System.Drawing.Size(133, 26);
+            this.aboutToolStripMenuItem.Size = new System.Drawing.Size(224, 26);
             this.aboutToolStripMenuItem.Text = "About";
             this.aboutToolStripMenuItem.Click += new System.EventHandler(this.aboutToolStripMenuItem_Click);
             // 
             // helpToolStripMenuItem1
             // 
             this.helpToolStripMenuItem1.Name = "helpToolStripMenuItem1";
-            this.helpToolStripMenuItem1.Size = new System.Drawing.Size(133, 26);
+            this.helpToolStripMenuItem1.Size = new System.Drawing.Size(224, 26);
             this.helpToolStripMenuItem1.Text = "Help";
             this.helpToolStripMenuItem1.Click += new System.EventHandler(this.helpToolStripMenuItem1_Click);
             // 
@@ -270,9 +274,10 @@
             this.TransparencyCheckBox2.BackColor = System.Drawing.SystemColors.ControlLight;
             this.TransparencyCheckBox2.Checked = true;
             this.TransparencyCheckBox2.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.TransparencyCheckBox2.Location = new System.Drawing.Point(120, 149);
+            this.TransparencyCheckBox2.Location = new System.Drawing.Point(49, 77);
+            this.TransparencyCheckBox2.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.TransparencyCheckBox2.Name = "TransparencyCheckBox2";
-            this.TransparencyCheckBox2.Size = new System.Drawing.Size(203, 35);
+            this.TransparencyCheckBox2.Size = new System.Drawing.Size(113, 20);
             this.TransparencyCheckBox2.TabIndex = 5;
             this.TransparencyCheckBox2.Text = "Transparency";
             this.TransparencyCheckBox2.UseVisualStyleBackColor = false;
@@ -291,16 +296,18 @@
             this.panel1.Controls.Add(this.UnitsBox);
             this.panel1.Controls.Add(this.CalibrateTextBox);
             this.panel1.Cursor = System.Windows.Forms.Cursors.Default;
-            this.panel1.Location = new System.Drawing.Point(835, 24);
+            this.panel1.Location = new System.Drawing.Point(418, 28);
+            this.panel1.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(366, 240);
+            this.panel1.Size = new System.Drawing.Size(184, 125);
             this.panel1.TabIndex = 6;
             // 
             // presetLabel
             // 
             this.presetLabel.AutoSize = true;
             this.presetLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.presetLabel.Location = new System.Drawing.Point(120, 117);
+            this.presetLabel.Location = new System.Drawing.Point(60, 60);
+            this.presetLabel.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.presetLabel.Name = "presetLabel";
             this.presetLabel.Size = new System.Drawing.Size(0, 25);
             this.presetLabel.TabIndex = 8;
@@ -308,10 +315,10 @@
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label1.Location = new System.Drawing.Point(40, 117);
+            this.label1.Location = new System.Drawing.Point(20, 60);
+            this.label1.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(74, 25);
+            this.label1.Size = new System.Drawing.Size(49, 16);
             this.label1.TabIndex = 7;
             this.label1.Text = "Preset:";
             // 
@@ -320,9 +327,10 @@
             this.TopMostCheckBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.TopMostCheckBox.AutoSize = true;
             this.TopMostCheckBox.BackColor = System.Drawing.SystemColors.ControlLight;
-            this.TopMostCheckBox.Location = new System.Drawing.Point(118, 188);
+            this.TopMostCheckBox.Location = new System.Drawing.Point(49, 97);
+            this.TopMostCheckBox.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.TopMostCheckBox.Name = "TopMostCheckBox";
-            this.TopMostCheckBox.Size = new System.Drawing.Size(205, 35);
+            this.TopMostCheckBox.Size = new System.Drawing.Size(112, 20);
             this.TopMostCheckBox.TabIndex = 6;
             this.TopMostCheckBox.Text = "Always on top";
             this.TopMostCheckBox.UseVisualStyleBackColor = false;
@@ -344,18 +352,16 @@
             // RulerForm
             // 
             this.AllowDrop = true;
-            this.AutoScaleDimensions = new System.Drawing.SizeF(16F, 31F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1209, 416);
+            this.ClientSize = new System.Drawing.Size(629, 299);
             this.Controls.Add(this.panel1);
             this.Controls.Add(this.menuStrip1);
             this.Cursor = System.Windows.Forms.Cursors.Cross;
             this.DoubleBuffered = true;
-            this.Font = new System.Drawing.Font("Microsoft Sans Serif", 16F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.KeyPreview = true;
             this.MainMenuStrip = this.menuStrip1;
-            this.Margin = new System.Windows.Forms.Padding(6);
             this.Name = "RulerForm";
             this.Text = "On Screen Calipers";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.RulerForm_FormClosing);
