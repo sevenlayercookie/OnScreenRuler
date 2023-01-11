@@ -35,7 +35,7 @@
     <Setting Name="BorderColor" Type="System.Drawing.Color" Scope="User">
       <Value Profile="(Default)">Yellow</Value>
     </Setting>
-    <Setting Name="LastSelectedPreset" Type="OnScreenCalipers.Preset" Scope="User">
+    <Setting Name="LastPresetName" Type="System.String" Scope="User">
       <Value Profile="(Default)" />
     </Setting>
   </Settings>

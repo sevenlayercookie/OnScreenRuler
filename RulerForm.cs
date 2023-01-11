@@ -762,7 +762,7 @@ namespace OnScreenCalipers
             Settings.Default.BorderWidth = border.Width;
 
             // presets
-            Settings.Default.LastSelectedPreset = ruler.LoadedPreset;
+            Settings.Default.LastPresetName = ruler.LoadedPresetName;
 
             Settings.Default.Save(); // Saves settings in application configuration file
             return 0;
@@ -777,7 +777,7 @@ namespace OnScreenCalipers
             border.Width = Settings.Default.BorderWidth;
 
             // last preset
-            ruler.LoadedPreset = Settings.Default.LastSelectedPreset;
+            ruler.LoadedPresetName = Settings.Default.LastPresetName;
             
 
             bool IsValid = validator.IsValid(Settings.Default);

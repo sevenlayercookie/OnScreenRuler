@@ -155,12 +155,13 @@ namespace OnScreenCalipers.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        public global::OnScreenCalipers.Preset LastSelectedPreset {
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string LastPresetName {
             get {
-                return ((global::OnScreenCalipers.Preset)(this["LastSelectedPreset"]));
+                return ((string)(this["LastPresetName"]));
             }
             set {
-                this["LastSelectedPreset"] = value;
+                this["LastPresetName"] = value;
             }
         }
     }
