@@ -550,6 +550,7 @@ namespace OnScreenCalipers
             Settings.Default.SettingChanging += new SettingChangingEventHandler(SettingChanging);
             LoadSettings();
             SetProcessDPIAware();
+            
             SetSelectedOption(UnitsBox, ruler);
             DoubleBuffered = true;
         }
