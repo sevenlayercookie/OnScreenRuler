@@ -54,23 +54,35 @@ namespace OnScreenCalipers
 
 
             crosshair = new Crosshair();
-
+            
             // button intitialisation
             leftButton = new System.Windows.Forms.Button();
             leftButton.Size = new Size(80, 40);
             leftButton.Text = "<";
+            leftButton.Font = new Font("Arial", 16);
             leftButton.BackColor = Color.White;
             leftButton.Click += LeftButton_Click;
+            leftButton.Cursor = default;
+            leftButton.MouseEnter += CaliperButton_MouseEnter;
 
             rightButton = new System.Windows.Forms.Button();
             rightButton.Size = new Size(80, 40);
             rightButton.Text = ">";
+            rightButton.Font = new Font("Arial", 16);
             rightButton.BackColor = Color.White;
             rightButton.Click += RightButton_Click;
+            rightButton.MouseEnter += CaliperButton_MouseEnter;
+            rightButton.Cursor= default;
 
             //ghostRuler = new Ruler();
             isDragging = false;
 
+        }
+
+        private void CaliperButton_MouseEnter(object sender, EventArgs e)
+        {
+            this.Cursor = default;
+            
         }
 
         private void SetSelectedOption(System.Windows.Forms.ComboBox unitsBox, Ruler ruler)
@@ -733,10 +745,12 @@ namespace OnScreenCalipers
         public bool enableTopMost(bool boolean)
         {
             return this.TopMost = TopMostCheckBox.Checked = boolean; // return the input (true or false)
+            /*
             if (CaliperAppearanceForm != null)
             {
                 CaliperAppearanceForm.DialogTopmost = boolean;
             }
+            */
         }
 
 
@@ -1148,6 +1162,7 @@ namespace OnScreenCalipers
                 {
                     //pattern = pattern.Replace("data:image/jpeg;base64,", "");
                     return pattern;
+                    /*
                     byte[] bytes = Convert.FromBase64String(pattern);
 
 
@@ -1157,7 +1172,7 @@ namespace OnScreenCalipers
                         image = System.Drawing.Image.FromStream(ms);
                         //return pattern;
                     }
-
+                    */
                 }
                 else
                 {
