@@ -553,6 +553,8 @@ namespace OnScreenCalipers
             
             SetSelectedOption(UnitsBox, ruler);
             DoubleBuffered = true;
+            AnchorPanel();
+            this.MinimumSize = new Size(menuStrip1.GetPreferredSize(PreferredSize).Width, panel1.Height + menuStrip1.Height);
         }
         public class ValidCheck
         {
@@ -949,10 +951,14 @@ namespace OnScreenCalipers
 
         private void RulerForm_Resize(object sender, EventArgs e)
         {
+            AnchorPanel();
+        }
+
+        private void AnchorPanel()
+        {
             panel1.Left = ClientRectangle.Right - panel1.Width;
             panel1.Top = menuStrip1.Bottom;
             this.Invalidate();
-            //DrawBorder();
         }
 
         private void checkBox1_CheckedChanged(object sender, EventArgs e)
